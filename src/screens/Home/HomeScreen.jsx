@@ -1,36 +1,35 @@
-import { View, TextInput, TouchableOpacity, Text, Image, FlatList, ScrollView } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import { View, TextInput, TouchableOpacity, Text, Image, ScrollView } from "react-native";
+import { useEffect, useState } from "react";
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import Header from "../../components/Header";
-import HotelListItem from "../../components/HotelCard";
 import FeatureCard from "../../components/FeatureCard";
+import HotelCard from "../../components/HotelCard";
+import Search from "../../components/Search";
 
 import { ImagesAssets } from '../../../assets/images';
+import { HotelsData } from '../../temp/data'
 
 import { styles } from "./styles";
-import HotelCard from "../../components/HotelCard";
 
 export default function HomeScreen({ navigation }) {
+  const [hotels, setHotels] = useState([]);
 
   const categories = ['Recommended', 'Popular', 'Trending', 'Luxury'];
 
-  const Item = ({ title }) => (
-    <View style={styles.itemView}>
-      <Text style={styles.itemTitle}>{title}</Text>
-    </View>
-  );
+  const tabBarHeight = useBottomTabBarHeight();
+
+  useEffect(() => {
+    setHotels(HotelsData);
+  }, [])
 
   return (
-    <ScrollView>
+    <ScrollView style={{ paddingBottom: tabBarHeight }}>
       {/* --- Welcome Text --- for authenticate user*/}
       {/* <Text>Welcome</Text> */}
 
       {/* Search */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#9E9E9E" />
-        <TextInput placeholder="Search" style={styles.searchInput} />
-        <Ionicons name="options-outline" size={20} color="#1AB65C" />
-      </View>
+      <Search />
 
       {/* --- Categories --- */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
@@ -47,15 +46,21 @@ export default function HomeScreen({ navigation }) {
       </ScrollView>
 
       {/* --- Featured Card (Emeralda De Hotel) --- */}
-      <FeatureCard
-        imageUrl='https://images.unsplash.com/photo-1566073771259-6a8506099945'
-        rating="4.8"
-        name="Emeralda De Hotel"
-        city="Paris"
-        country="France"
-        price="$29"
-        kind="/ per night"
-      />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.featuredScroll}>
+        {hotels.filter(h => h.id !== 0).map((hotel) => (
+          <FeatureCard
+            key={hotel.id}
+            //imageUrl={hotel.imageUrl}
+            imageUrl={hotel.base64 ? hotel.base64 : hotel.imageUrl}
+            rating={hotel.rating}
+            name={hotel.name}
+            city={hotel.city}
+            country={hotel.country}
+            price={hotel.price}
+            kind="/ per night"
+          />
+        ))}
+      </ScrollView>
 
       {/* --- Recently Booked Section --- */}
       <ScrollView>
@@ -67,7 +72,7 @@ export default function HomeScreen({ navigation }) {
         <HotelCard
           name="President Hotel"
           imageUrl="https://images.unsplash.com/photo-1566073771259-6a8506099945"
-          city="Paris" 
+          city="Paris"
           country="France"
           price="35"
           rating="4.8"

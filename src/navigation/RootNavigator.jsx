@@ -6,6 +6,7 @@ import HomeNavigator from "./HomeNavigator";
 import SearchScreen from "../screens/Search";
 import BookingScreen from "../screens/Booking";
 
+
 import { ImagesAssets } from '../../assets/images';
 
 import { styles } from "./styles";
@@ -15,25 +16,7 @@ export default function RootNavigator() {
 
     return (
         <Tabs.Navigator
-            screenOptions={{...styles.tabsNavigator}}
-            // screenOptions={{
-            //     tabBarStyle: styles.bottomTab,
-            //     tabBarActiveTintColor: styles.tabLabelActive.color,
-            //     tabBarInactiveTintColor: styles.tabLabel.color,
-            //     tabBarLabelStyle: {
-            //         fontSize: styles.tabLabel.fontSize,
-            //         marginTop: styles.tabLabel.marginTop,
-            //     },
-            //     headerLeftContainerStyle: {
-            //         paddingLeft: 32
-            //     },
-            //     headerTitleContainerStyle: {
-            //         paddingBottom: 0,
-            //     },
-            //     headerRightContainerStyle: {
-            //         marginRight: 20
-            //     },
-            // }}
+            screenOptions={{ ...styles.tabsNavigator }}
         >
             <Tabs.Screen
                 name="HomeTab"
@@ -49,7 +32,8 @@ export default function RootNavigator() {
                 name="Search"
                 component={SearchScreen}
                 options={{
-                    tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size} color={color} />,
+                    headerTitle: '',
+                    tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size} color={color} />,                  
                 }}
             />
 

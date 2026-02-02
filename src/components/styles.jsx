@@ -5,7 +5,23 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff"
   },
+  searchContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#F5F5F5',
+    borderBlockColor: '#1AB65C',
+    borderWidth: 0.5,
+    margin: 20,
+    padding: 5, 
+    borderRadius: 15, 
+    alignItems: 'center'
+  },
+  searchInput: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 16
+  },
   featuredCard: {
+    width: 300,
     marginHorizontal: 20,
     height: 400,
     borderRadius: 30,

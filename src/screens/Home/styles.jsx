@@ -68,4 +68,8 @@ export const styles = StyleSheet.create({
     color: '#1AB65C',
     fontWeight: 'bold'
   },
+  featuredScroll: {
+    paddingLeft: 20,
+    marginBottom: 20
+  },
 });
