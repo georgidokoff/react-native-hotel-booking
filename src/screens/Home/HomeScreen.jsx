@@ -50,7 +50,6 @@ export default function HomeScreen({ navigation }) {
         {hotels.filter(h => h.id !== 0).map((hotel) => (
           <FeatureCard
             key={hotel.id}
-            //imageUrl={hotel.imageUrl}
             imageUrl={hotel.base64 ? hotel.base64 : hotel.imageUrl}
             rating={hotel.rating}
             name={hotel.name}

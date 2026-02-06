@@ -3,139 +3,276 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   searchContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#F5F5F5',
-    borderBlockColor: '#1AB65C',
+    flexDirection: "row",
+    backgroundColor: "#F5F5F5",
+    borderBlockColor: "#1AB65C",
     borderWidth: 0.5,
     margin: 20,
-    padding: 5, 
-    borderRadius: 15, 
-    alignItems: 'center'
+    padding: 5,
+    borderRadius: 15,
+    alignItems: "center",
   },
   searchInput: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 16
+    fontSize: 16,
   },
   featuredCard: {
     width: 300,
     marginHorizontal: 20,
     height: 400,
     borderRadius: 30,
-    overflow: 'hidden',
-    position: 'relative'
+    overflow: "hidden",
+    position: "relative",
   },
   featuredImage: {
-    width: '100%',
-    height: '100%'
+    width: "100%",
+    height: "100%",
   },
   ratingBadge: {
-    position: 'absolute',
+    position: "absolute",
     top: 20,
     right: 20,
-    backgroundColor: '#1AB65C',
-    flexDirection: 'row',
+    backgroundColor: "#1AB65C",
+    flexDirection: "row",
     padding: 8,
     borderRadius: 15,
-    alignItems: 'center'
+    alignItems: "center",
   },
   ratingText: {
-    color: '#fff',
+    color: "#fff",
     marginLeft: 5,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   featuredOverlay: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    width: '100%',
+    width: "100%",
     padding: 20,
-    backgroundColor: 'rgba(0,0,0,0.3)'
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
   featuredName: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 22,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   featuredLocation: {
-    color: '#fff',
-    opacity: 0.8
+    color: "#fff",
+    opacity: 0.8,
   },
   priceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
   },
   featuredPrice: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   perNight: {
     fontSize: 12,
-    fontWeight: 'normal'
+    fontWeight: "normal",
   },
   listItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 15,
     marginHorizontal: 20,
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 20,
     elevation: 3,
-    shadowColor: '#000',
-    shadowOffset:
-      { width: 0, height: 2 },
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 10
+    shadowRadius: 10,
   },
   listImage: {
     width: 100,
     height: 100,
-    borderRadius: 15
+    borderRadius: 15,
   },
   listContent: {
     flex: 1,
     marginLeft: 15,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   listName: {
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   listLocation: {
-    color: '#666',
-    marginVertical: 4
+    color: "#666",
+    marginVertical: 4,
   },
-  listRatingRow:
-  {
-    flexDirection: 'row',
-    alignItems: 'center'
+  listRatingRow: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   listRatingText: {
     marginLeft: 5,
-    fontWeight: '600'
+    fontWeight: "600",
   },
-  reviewText:
-  {
-    fontWeight: 'normal',
-    color: '#9E9E9E'
+  reviewText: {
+    fontWeight: "normal",
+    color: "#9E9E9E",
   },
-  listPriceInfo:
-  {
-    alignItems: 'flex-end',
-    justifyContent: 'center'
+  listPriceInfo: {
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
   listPrice: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1AB65C'
+    fontWeight: "bold",
+    color: "#1AB65C",
   },
   perNightSmall: {
     fontSize: 10,
-    color: '#9E9E9E'
+    color: "#9E9E9E",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    padding: 16,
+    marginBottom: 20,
+    // Shadow for iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    // Shadow for Android
+    elevation: 3,
+  },
+  cardInfo: {
+    flexDirection: "row",
+    marginBottom: 16,
+  },
+  hotelImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 20,
+  },
+  details: {
+    flex: 1,
+    marginLeft: 16,
+    justifyContent: "center",
+  },
+  hotelName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  location: {
+    color: "#757575",
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  statusBadge: {
+    alignSelf: "flex-start",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  badgePaid: {
+    backgroundColor: "#E8F8EF",
+    color: "#1AB65C",
+  },
+  badgeCompleted: {
+    backgroundColor: "#E8F8EF",
+    color: "#1AB65C",
+  },
+  badgeCanceled: {
+    backgroundColor: "#FFEBEE",
+    color: "#F44336",
+  },
+  actionRow: {
+    flexDirection: "row",
+    borderTopWidth: 1,
+    borderTopColor: "#EEEEEE",
+    paddingTop: 16,
+    justifyContent: "space-between",
+  },
+  cancelBtn: {
+    flex: 1,
+    marginRight: 8,
+    paddingVertical: 12,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "#1AB65C",
+    alignItems: "center",
+  },
+  cancelBtnText: {
+    color: "#1AB65C",
+    fontWeight: "bold",
+  },
+  viewBtn: {
+    flex: 1,
+    marginLeft: 8,
+    paddingVertical: 12,
+    borderRadius: 20,
+    backgroundColor: "#1AB65C",
+    alignItems: "center",
+  },
+  viewBtnText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  alertBar: {
+    backgroundColor: "#FFEBEE",
+    padding: 12,
+    borderRadius: 12,
+    marginTop: 12,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  alertText: {
+    color: "#F44336",
+    fontSize: 12,
+    marginLeft: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  successCard: {
+    width: "85%",
+    backgroundColor: "#fff",
+    borderRadius: 40,
+    padding: 32,
+    alignItems: "center",
+  },
+  iconCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#1AB65C",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  successTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#1AB65C",
+    marginBottom: 16,
+  },
+  successSub: {
+    textAlign: "center",
+    color: "#616161",
+    lineHeight: 22,
+    marginBottom: 24,
+  },
+  okButton: {
+    backgroundColor: "#1AB65C",
+    width: "100%",
+    paddingVertical: 16,
+    borderRadius: 30,
+    alignItems: "center",
   },
 });
