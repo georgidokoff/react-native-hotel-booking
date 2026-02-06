@@ -22,14 +22,14 @@ export default function HotelCard({
             />
             <View style={styles.listContent}>
                 <Text style={styles.listName}>{name}</Text>
-                <Text style={styles.listLocation}>{city}, {country}</Text>
+                <Text style={styles.listLocation}>{location}</Text>
                 <View style={styles.listRatingRow}>
                     <Ionicons name="star" size={14} color="#FFD700" />
                     <Text style={styles.listRatingText}>{rating} <Text style={styles.reviewText}>({reviews} reviews)</Text></Text>
                 </View>
             </View>
             <View style={styles.listPriceInfo}>
-                <Text style={styles.listPrice}>${price}</Text>
+                <Text style={styles.listPrice}>€ {price}</Text>
                 <Text style={styles.perNightSmall}>/ night</Text>
                 <Ionicons name="bookmark" size={20} color={booked ? "#1AB65C" : "#9E9E9E"} style={{ marginTop: 5 }} />
             </View>

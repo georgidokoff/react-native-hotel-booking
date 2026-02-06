@@ -39,3 +39,12 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# temporary files
+/temp
+
+# env file
+.env
+
+# VSCode settings
+.vscode/

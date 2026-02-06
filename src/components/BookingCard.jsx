@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 
 import { CancelBookingModal } from "./CancelBookingModal";
 
-import { getStatusColor } from "../helpers/styleHelpers";
+import { getStatusColor } from "../helpers/styleHelper";
 import { styles } from "./styles";
 import { TicketModal } from "./TicketModal";
 
