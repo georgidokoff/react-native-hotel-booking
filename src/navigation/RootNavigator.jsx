@@ -1,19 +1,26 @@
-import { Image, View, Text, TouchableOpacity } from "react-native";
+import { Image, View, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import HomeNavigator from "./HomeNavigator";
 import SearchScreen from "../screens/Search";
 import BookingScreen from "../screens/Booking";
 
+import Authnavigator from "./AuthNavigator.jsx";
+import { useAuth } from "../contexts/auth/useAuth.js";
+
 import { ImagesAssets } from "../../assets/images";
 
 import { styles } from "./styles";
 
 export default function RootNavigator() {
+  const Stack = createNativeStackNavigator();
   const Tabs = createBottomTabNavigator();
 
-  return (
+  const { isAuthenticated, isGuest } = useAuth();
+
+  return isAuthenticated ? (
     <Tabs.Navigator screenOptions={{ ...styles.tabsNavigator }}>
       <Tabs.Screen
         name="HomeTab"
@@ -65,5 +72,18 @@ export default function RootNavigator() {
         }}
       />
     </Tabs.Navigator>
+  ) : (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="AuthGate"
+        component={Authnavigator}
+        options={{
+          headerShown: false,
+          headerTitle: "",
+          presentation: "modal",
+          headerBackButtonDisplayMode: true,
+        }}
+      />
+    </Stack.Navigator>
   );
 }
