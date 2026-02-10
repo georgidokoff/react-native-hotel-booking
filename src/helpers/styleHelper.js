@@ -44,3 +44,8 @@ export const getStatusStyles = (status) => {
             return badgePaid;
     }
 };
+
+export const defaultTheme = {
+    primaryColor:"#1AB65C",
+    greyColor:"#9E9E9E", 
+}
