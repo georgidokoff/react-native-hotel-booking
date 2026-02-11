@@ -54,18 +54,10 @@ export function AuthProvider({ children }) {
             setIsLoading(true);
             const response = await callRegister(email, password, name);
 
-            let user = {
-                id: response?.objectId,
-                email: response?.email,
-                name: response?.name,
-                phone: response?.phone,
-                locale: response?.blUserLocale,
+            if (response?.userStatus === "ENABLED") {
+                 await login(email, password);
             }
-            
-           const accessToken = response['user-token'];
-            
-           setAuth({ user, accessToken });
-
+			
         } catch (err) {
             setError(err.message || 'An error occurred during registration');
         }

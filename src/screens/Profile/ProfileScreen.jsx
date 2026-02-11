@@ -31,7 +31,6 @@ export default function ProfileScreen() {
       setUser(auth.user);
     }
   }, [auth]);
-console.log("Auth:", auth);
 
   const updateUserHandler = async () => {
     user.id = auth.user.id;
