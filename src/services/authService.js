@@ -15,3 +15,9 @@ export async function callRegister(email, password, name) {
     
     return result.data;
 }   
+
+export async function callLoginGuest() {
+    const result = await authApi.post('/register/guest', { });
+   
+    return result.data;
+}   

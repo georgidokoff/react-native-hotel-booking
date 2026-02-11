@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { callLogin, callRegister } from "../../services/authService.js";
+import { callLogin, callRegister, callLoginGuest } from "../../services/authService.js";
 import { usePersistedState } from "../../hooks/usePersistedState.js";
 
 export const AuthContext = createContext({
@@ -11,6 +11,7 @@ export const AuthContext = createContext({
     auth: null,
     login: async (email, password) => { },
     register: async (email, password, name) => { },
+    loginGuest: async () => { },
     clearError: () => { },
     logout: () => { },
 });
@@ -35,6 +36,7 @@ export function AuthProvider({ children }) {
                 name: response?.name,
                 phone: response?.phone,
                 locale: response?.blUserLocale,
+                status: response?.userStatus,
             }
 
             const accessToken = response['user-token'];
@@ -72,9 +74,30 @@ export function AuthProvider({ children }) {
         }
     }
     
+    const loginGuest = async () => {
+        try {
+            setIsLoading(true);
+
+            const response = await callLoginGuest();
+            let user = {
+                id: response?.objectId,
+                email: 'guest',
+                name: 'Guest User',
+                status: response?.userStatus,
+            }
+            const accessToken = response['user-token'];
+            setAuth({ user, accessToken });
+            
+        } catch (err) {
+            setError(err.message || 'An error occurred during guest login');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     const contextValue = {
-        isAuthenticated: !!auth.user,
-        isGuest: !auth.user && !auth.accessToken,
+        isAuthenticated: !!auth.user && !!auth.accessToken && auth.user?.status === 'ENABLED',
+        isGuest: !!auth.user && !!auth.accessToken && auth.user?.status === 'GUEST',
         isLoading,
         error,
         user: auth.user,
@@ -82,6 +105,7 @@ export function AuthProvider({ children }) {
         clearError: () => setError(null),
         login,
         register,
+        loginGuest,
         logout: () => {
             setAuth({
                 accessToken: null,

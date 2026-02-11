@@ -8,7 +8,7 @@ import { useAuth } from "../../contexts/auth/useAuth.js";
 import { styles } from "./styles";
 
 export default function AuthGateScreen({ navigation }) {
-  const { login, register, isLoading, error, clearError } = useAuth();
+  const { login, register, loginGuest, isLoading, error, clearError } = useAuth();
 
   const signInHandler = async (email, password) => {
     // validation can be added here
@@ -20,8 +20,8 @@ export default function AuthGateScreen({ navigation }) {
     await register(email, password);
   };
 
-  const guestHandler = () => {
-    alert("Guest access functionality coming soon!");
+  const guestHandler = async () => {
+    await loginGuest();
   };
 
   const signUpNavigateHandler = () => {
@@ -56,7 +56,6 @@ export default function AuthGateScreen({ navigation }) {
     navigation.goBack();
 
     guestHandler();
-    // add isGusest
   };
 
   useEffect(() => {

@@ -65,7 +65,7 @@ export default function LoginScreen() {
             <TextInput
               placeholder="Email"
               style={[styles.input]}
-              placeholderTextColor={emailColor}
+              placeholderTextColor={defaultTheme.greyColor}
               onChangeText={setLogin}
               onFocus={() => {
                 setEmailColor(defaultTheme.primaryColor);
@@ -88,8 +88,8 @@ export default function LoginScreen() {
             <TextInput
               placeholder="Password"
               secureTextEntry={!isPasswordVisible}
-              style={[styles.input]}
-              placeholderTextColor={passwordColor}
+              style={styles.input}
+              placeholderTextColor={defaultTheme.greyColor}
               onChangeText={setPassword}
               onFocus={() => {
                 setPasswordColor(defaultTheme.primaryColor);
@@ -106,7 +106,7 @@ export default function LoginScreen() {
               <Ionicons
                 name={isPasswordVisible ? "eye-outline" : "eye-off-outline"}
                 size={20}
-                color="#9E9E9E"
+                color={defaultTheme.greyColor}
               />
             </TouchableOpacity>
           </View>

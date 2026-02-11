@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import RootNavigator from "./navigation/RootNavigator";
 import { AuthProvider } from "./contexts/auth/AuthProvider.jsx";
 import { HotelProvider } from "./contexts/hotels/HotelProvider";
+import { UserProvider } from "./contexts/users/UserProvider.jsx";
 
 export default function App() {
   return (
@@ -12,7 +13,9 @@ export default function App() {
 
       <AuthProvider>
         <HotelProvider>
-          <RootNavigator />
+          <UserProvider>
+            <RootNavigator />
+          </UserProvider>
         </HotelProvider>
       </AuthProvider>
     </NavigationContainer>
