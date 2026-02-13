@@ -5,6 +5,7 @@ import RootNavigator from "./navigation/RootNavigator";
 import { AuthProvider } from "./contexts/auth/AuthProvider.jsx";
 import { HotelProvider } from "./contexts/hotels/HotelProvider";
 import { UserProvider } from "./contexts/users/UserProvider.jsx";
+import { BookingProvider } from "./contexts/bookings/BookingProvider.jsx";
 
 export default function App() {
   return (
@@ -14,7 +15,9 @@ export default function App() {
       <AuthProvider>
         <HotelProvider>
           <UserProvider>
-            <RootNavigator />
+            <BookingProvider>
+              <RootNavigator />
+            </BookingProvider>
           </UserProvider>
         </HotelProvider>
       </AuthProvider>
