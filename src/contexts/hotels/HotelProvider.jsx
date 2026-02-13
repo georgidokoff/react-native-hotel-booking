@@ -10,9 +10,16 @@ export function HotelProvider({ children }) {
   const [hotels, setHotels] = useState([]);
 
   useEffect(() => {
-    getAll()
-      .then((result) => setHotels(result))
-      .catch((err) => console.log(err));
+    async function getAllHandler() {
+      try {
+        const result = await getAll();
+        setHotels(result);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    getAllHandler();
   }, []);
 
   const getHotelById = (hotelId) => {

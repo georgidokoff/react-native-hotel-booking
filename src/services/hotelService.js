@@ -7,8 +7,8 @@ export async function getAll() {
 }
 
 export async function getById(hotelId) {
-    const equalSymbol = '%3D'
-    const result = await api.get(`/hotels?where=id${equalSymbol}${hotelId}`);
+    const equalSymbol = '%20%3D%20';
+    const result = await api.get(`/hotels?where=id${equalSymbol}'${hotelId}'`);
 
     return result.data;
 }
