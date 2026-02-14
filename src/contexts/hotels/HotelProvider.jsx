@@ -3,6 +3,7 @@ import { getAll, getById } from "../../services/hotelService.js";
 
 export const HotelContext = createContext({
   hotels: [],
+  getAllHandler() {},
   getHotelById(hotelId) {},
 });
 
@@ -10,17 +11,18 @@ export function HotelProvider({ children }) {
   const [hotels, setHotels] = useState([]);
 
   useEffect(() => {
-    async function getAllHandler() {
-      try {
-        const result = await getAll();
-        setHotels(result);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
     getAllHandler();
   }, []);
+
+  const getAllHandler = async () => {
+    try {
+      const result = await getAll();
+      setHotels(result);
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const getHotelById = (hotelId) => {
     return getById(hotelId);
@@ -28,6 +30,7 @@ export function HotelProvider({ children }) {
 
   const contextValue = {
     hotels,
+    getAllHandler,
     getHotelById,
   };
 

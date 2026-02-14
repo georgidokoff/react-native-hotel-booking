@@ -1,5 +1,11 @@
-import { useMemo, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { useMemo, useState, useCallback } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
 
 import BookingCard from "../../components/BookingCard";
 
@@ -10,26 +16,36 @@ import { tabs } from "../../helpers/commonHelper.js";
 import { styles } from "./styles";
 
 export default function BookingScreen() {
+  const [refreshing, setRefreshing] = useState(false);
   const [auth] = usePersistedState("auth", null);
   const { getByUserId, update } = useBooking();
 
   const [activeTab, setActiveTab] = useState("Ongoing");
   const [bookingsData, setBookingsData] = useState([]);
 
-  useMemo(() => {
-    async function fetchBookings() {
-      if (auth && auth.user.id && auth.accessToken) {
-        await getByUserId(auth.user.id, auth.accessToken)
-          .then((bookings) => {
-            setBookingsData(bookings);
-          })
-          .catch((err) => {
-            console.error("Error fetching bookings:", err);
-          });
-      }
+  const fetchBookings = async () => {
+    if (auth && auth.user.id && auth.accessToken) {
+      await getByUserId(auth.user.id, auth.accessToken)
+        .then((bookings) => {
+          setBookingsData(bookings);
+          setRefreshing(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching bookings:", err);
+        });
     }
+  };
 
+  useMemo(() => {
     fetchBookings();
+  }, [auth]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+
+    if (auth?.user) {
+      await fetchBookings();
+    }
   }, [auth]);
 
   const tabPressHandler = (tab) => {
@@ -71,7 +87,12 @@ export default function BookingScreen() {
       </View>
 
       <FlatList
-        data={bookingsData && bookingsData.filter((od) => od.state === activeTab)}
+        data={
+          bookingsData && bookingsData.filter((od) => od.state === activeTab)
+        }
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <BookingCard

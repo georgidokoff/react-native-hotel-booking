@@ -1,52 +1,87 @@
 import {
   View,
-  TextInput,
   TouchableOpacity,
   Text,
-  Image,
   ScrollView,
+  RefreshControl,
+  Image,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 import { usePersistedState } from "../../hooks/usePersistedState";
+import { useBooking } from "../../contexts/bookings/useBooking";
 
-import Header from "../../components/Header";
 import FeatureCard from "../../components/FeatureCard";
 import HotelCard from "../../components/HotelCard";
 import Search from "../../components/Search";
 
 import { ImagesAssets } from "../../../assets/images";
-
 import { HotelsData } from "../../temp/data";
 import { styles } from "./styles";
+import { randomGenerateReviews } from "../../helpers/commonHelper";
 
 export default function HomeScreen({ navigation }) {
+  const { getByUserId } = useBooking();
+  const [refreshing, setRefreshing] = useState(false);
   const [hotels, setHotels] = useState([]);
-   const [auth, setAuth] = usePersistedState("auth", {
-      user: null,
-      accessToken: null,
-    });
-    const [user, setUser] = useState(auth?.user || null);
+  const [auth] = usePersistedState("auth", {
+    user: null,
+    accessToken: null,
+  });
+  const [user, setUser] = useState(auth?.user || null);
+  const [bookingData, setBookingData] = useState([]);
 
   const categories = ["Recommended", "Popular", "Trending", "Luxury"];
 
   const tabBarHeight = useBottomTabBarHeight();
 
+  const fetchingBookings = async () => {
+    await getByUserId(auth.user.id, auth.accessToken)
+      .then((booking) => {
+        setBookingData(booking?.filter((b) => b?.state === "Ongoing"));
+        setRefreshing(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setRefreshing(false);
+      });
+  };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+
+    if (auth?.user) {
+      await fetchingBookings();
+    }
+  }, [auth]);
+
   useEffect(() => {
     setHotels(HotelsData);
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     if (auth?.user) {
       setUser(auth.user);
+
+      fetchingBookings();
     }
   }, [auth]);
-  
+
   return (
-    <ScrollView style={{ paddingBottom: tabBarHeight }}>
+    <ScrollView
+      style={{ paddingBottom: tabBarHeight }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       {/* --- Welcome Text --- for authenticate user*/}
-      {/* <Text>Welcome</Text> */}
+      {user?.status === "ENABLED" && (
+        <View style={[styles.sectionHeader,{justifyContent: 'flex-start', padding: 10,marginBottom: 10}]}>
+          <Text style={[styles.sectionTitle,{fontSize: 28}]}>Hello, {user.name}{'  '}</Text>
+          <Image source={ImagesAssets.waving_hand_light} style={{width: 40, height: 40}} />
+        </View>
+      )}
 
       {/* Search */}
       <Search />
@@ -100,7 +135,7 @@ export default function HomeScreen({ navigation }) {
       </ScrollView>
 
       {/* --- Recently Booked Section --- */}
-      {(user?.status ==="ENABLED" && (
+      {(user?.status === "ENABLED" && (
         <ScrollView>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Recently Booked</Text>
@@ -109,29 +144,26 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          <HotelCard
-            name="President Hotel"
-            imageUrl="https://images.unsplash.com/photo-1566073771259-6a8506099945"
-            city="Paris"
-            country="France"
-            price="35"
-            rating="4.8"
-            reviews="4,378"
-            booked={true}
-          />
-          <HotelCard
-            name="Palms Casino"
-            imageUrl="https://images.unsplash.com/photo-1566073771259-6a8506099945"
-            city="Amsterdam"
-            country="Netherlands"
-            price="29"
-            rating="4.9"
-            reviews="5,283"
-          />
+          {bookingData &&
+            bookingData.map((ongoing) => (
+              <HotelCard
+                key={ongoing.id}
+                name={ongoing.name}
+                imageUrl={ongoing.imageUrl}
+                city={ongoing.city}
+                country={ongoing.country}
+                price={ongoing.price}
+                rating="4.8"
+                reviews={randomGenerateReviews()}
+                booked={ongoing.state === "Ongoing"}
+              />
+            ))}
         </ScrollView>
       )) || (
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Logined in users see their bookings</Text>
+          <Text style={styles.sectionTitle}>
+            Logined in users see their bookings
+          </Text>
         </View>
       )}
     </ScrollView>
