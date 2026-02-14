@@ -73,8 +73,9 @@ export function AuthProvider({ children }) {
             const response = await callLoginGuest();
             let user = {
                 id: response?.objectId,
-                email: 'guest',
+                email: 'guest@example.com',
                 name: 'Guest User',
+                phone: '+359812345678',
                 status: response?.userStatus,
             }
             const accessToken = response['user-token'];

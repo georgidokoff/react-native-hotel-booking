@@ -29,7 +29,7 @@ export default function FeatureCard({
                     <Text style={styles.perNight}>{kind}
                     </Text>
                 </Text>
-                <Ionicons name="bookmark" size={20} color="#fff" />
+                <Ionicons name="bookmark-outline" size={28} color="#fff" />
             </View>
         </View>
     </View>)

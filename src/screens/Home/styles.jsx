@@ -70,6 +70,6 @@ export const styles = StyleSheet.create({
   },
   featuredScroll: {
     paddingLeft: 20,
-    marginBottom: 20
+    marginBottom: 10
   },
 });

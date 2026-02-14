@@ -99,7 +99,7 @@ export default function RootNavigator() {
         name="Profile"
         component={ProfileScreen}
         options={{
-          headerTitle: isGuest ? "Guests Can Logout" : "My profile",
+          headerTitle: isGuest ? "Guests Can only logout" : "My profile",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" size={size} color={color} />
           ),

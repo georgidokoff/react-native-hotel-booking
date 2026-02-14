@@ -18,7 +18,7 @@ export default function HomeNavigator({}) {
           name="Welcome"
           component={HomeScreen}
           options={{
-            //headerTitle: '',
+            headerTitle: 'Hotel booking',
             headerLeft: () => (
               <View style={styles.homeNavigatorView}>
                 <Image
