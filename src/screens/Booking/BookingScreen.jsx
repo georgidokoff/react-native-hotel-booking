@@ -1,26 +1,26 @@
 import { useMemo, useState, useCallback } from "react";
 import {
   View,
-  Text,
   FlatList,
-  TouchableOpacity,
   RefreshControl,
 } from "react-native";
 
 import BookingCard from "../../components/BookingCard";
+import { Tab } from "../../common/Tab.jsx";
 
-import { useBooking } from "../../contexts/bookings/useBooking.js";
 import { usePersistedState } from "../../hooks/usePersistedState.js";
+import { authKey, Canceled, CanceledNRefunded, Ongoing } from "../../shared/constants.js";
 import { tabs } from "../../helpers/commonHelper.js";
+import { useBooking } from "../../contexts/bookings/useBooking.js";
 
 import { styles } from "./styles";
 
 export default function BookingScreen() {
   const [refreshing, setRefreshing] = useState(false);
-  const [auth] = usePersistedState("auth", null);
+  const [auth] = usePersistedState(authKey, null);
   const { getByUserId, update } = useBooking();
 
-  const [activeTab, setActiveTab] = useState("Ongoing");
+  const [activeTab, setActiveTab] = useState(Ongoing);
   const [bookingsData, setBookingsData] = useState([]);
 
   const fetchBookings = async () => {
@@ -54,8 +54,8 @@ export default function BookingScreen() {
 
   const cancelBookingCardHandler = async (id) => {
     let canceledBooking = bookingsData.find((od) => od.id === id);
-    canceledBooking.state = "Canceled";
-    canceledBooking.tag = "Canceled & Refunded";
+    canceledBooking.state = Canceled;
+    canceledBooking.tag = CanceledNRefunded;
 
     await update(canceledBooking, auth.accessToken);
 
@@ -69,20 +69,13 @@ export default function BookingScreen() {
     <View style={styles.container}>
       <View style={styles.tabContainer}>
         {tabs.map((tab) => (
-          <TouchableOpacity
+          <Tab
             key={tab}
-            onPress={() => tabPressHandler(tab)}
-            style={[styles.tab, activeTab === tab && styles.activeTab]}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === tab && styles.activeTabText,
-              ]}
-            >
-              {tab}
-            </Text>
-          </TouchableOpacity>
+            tabPressHandler={tabPressHandler}
+            style={{ ...styles }}
+            tab={tab}
+            activeTab={activeTab}
+          />
         ))}
       </View>
 
