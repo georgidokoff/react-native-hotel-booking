@@ -6,40 +6,41 @@ import {
   RefreshControl,
   Image,
 } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
+import { categories, randomGenerateReviews } from "../../helpers/commonHelper";
+import { authKey, Ongoing, Recommended, Authorised, PerNight } from "../../shared/constants";
 import { usePersistedState } from "../../hooks/usePersistedState";
 import { useBooking } from "../../contexts/bookings/useBooking";
+import { useHotel } from "../../contexts/hotels/useHotel";
 
-import FeatureCard from "../../components/FeatureCard";
 import HotelCard from "../../components/HotelCard";
 import Search from "../../components/Search";
+import { Tab } from "../../common/Tab";
 
 import { ImagesAssets } from "../../../assets/images";
-import { HotelsData } from "../../temp/data";
 import { styles } from "./styles";
-import { randomGenerateReviews } from "../../helpers/commonHelper";
 
 export default function HomeScreen({ navigation }) {
-  const { getByUserId } = useBooking();
+  const [activeTab, setActiveTab] = useState(Recommended);
   const [refreshing, setRefreshing] = useState(false);
-  const [hotels, setHotels] = useState([]);
-  const [auth] = usePersistedState("auth", {
+  const { getByUserId } = useBooking();
+  const { hotels } = useHotel();
+  const [hotelsData, setHotelsData] = useState(hotels || []);
+  const [auth] = usePersistedState(authKey, {
     user: null,
     accessToken: null,
   });
   const [user, setUser] = useState(auth?.user || null);
-  const [bookingData, setBookingData] = useState([]);
-
-  const categories = ["Recommended", "Popular", "Trending", "Luxury"];
+  const [bookingsData, setBookingsData] = useState([]);
 
   const tabBarHeight = useBottomTabBarHeight();
 
   const fetchingBookings = async () => {
     await getByUserId(auth.user.id, auth.accessToken)
       .then((booking) => {
-        setBookingData(booking?.filter((b) => b?.state === "Ongoing"));
+        setBookingsData(booking?.filter((b) => b?.state === Ongoing));
         setRefreshing(false);
       })
       .catch((err) => {
@@ -54,11 +55,15 @@ export default function HomeScreen({ navigation }) {
     if (auth?.user) {
       await fetchingBookings();
     }
+
+    if (hotels?.length > 0) {
+      setHotelsData(hotels);
+    }
   }, [auth]);
 
-  useEffect(() => {
-    setHotels(HotelsData);
-  }, []);
+  useMemo(() => {
+    setHotelsData(hotels);
+  }, [hotels]);
 
   useEffect(() => {
     if (auth?.user) {
@@ -68,6 +73,10 @@ export default function HomeScreen({ navigation }) {
     }
   }, [auth]);
 
+  const tabPressHandler = (tab) => {
+    setActiveTab(tab);
+  };
+
   return (
     <ScrollView
       style={{ paddingBottom: tabBarHeight }}
@@ -76,10 +85,10 @@ export default function HomeScreen({ navigation }) {
       }
     >
       {/* --- Welcome Text --- for authenticate user*/}
-      {user?.status === "ENABLED" && (
-        <View style={[styles.sectionHeader,{justifyContent: 'flex-start', padding: 10,marginBottom: 10}]}>
-          <Text style={[styles.sectionTitle,{fontSize: 28}]}>Hello, {user.name}{'  '}</Text>
-          <Image source={ImagesAssets.waving_hand_light} style={{width: 40, height: 40}} />
+      {user?.status === Authorised && (
+        <View style={[styles.sectionHeader, { justifyContent: 'flex-start', padding: 10, marginBottom: 10 }]}>
+          <Text style={[styles.sectionTitle, { fontSize: 28 }]}>Hello, {user.name}{'  '}</Text>
+          <Image source={ImagesAssets.waving_hand_light} style={{ width: 40, height: 40 }} />
         </View>
       )}
 
@@ -93,22 +102,13 @@ export default function HomeScreen({ navigation }) {
         style={styles.categoryScroll}
       >
         {categories.map((cat, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.categoryBtn,
-              index === 0 && styles.categoryBtnActive,
-            ]}
-          >
-            <Text
-              style={[
-                styles.categoryText,
-                index === 0 && styles.categoryTextActive,
-              ]}
-            >
-              {cat}
-            </Text>
-          </TouchableOpacity>
+          <Tab
+            key={cat}
+            style={{ ...styles }}
+            activeTab={activeTab}
+            tabPressHandler={tabPressHandler}
+            tab={cat}
+          />
         ))}
       </ScrollView>
 
@@ -118,34 +118,36 @@ export default function HomeScreen({ navigation }) {
         showsHorizontalScrollIndicator={false}
         style={styles.featuredScroll}
       >
-        {hotels
+        {hotelsData
           .filter((h) => h.id !== 0)
           .map((hotel) => (
-            <FeatureCard
+            <HotelCard
               key={hotel.id}
-              imageUrl={hotel.base64 ? hotel.base64 : hotel.imageUrl}
-              rating={hotel.rating}
+              imageUrl={hotel.image_url}
+              rating={hotel.ratings}
               name={hotel.name}
               city={hotel.city}
-              country={hotel.country}
-              price={hotel.price}
-              kind="/ per night"
+              country={hotel.country_code}
+              price={hotel.price_per_night}
+              kind={PerNight}
+              feature={true}
+              onPress={() => { alert(`load hotel ${hotel.id}`) }}
             />
           ))}
       </ScrollView>
 
       {/* --- Recently Booked Section --- */}
-      {(user?.status === "ENABLED" && (
+      {(user?.status === Authorised && (
         <ScrollView>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Recently Booked</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => { alert('load all') }}>
               <Text style={styles.seeAll}>See All</Text>
             </TouchableOpacity>
           </View>
 
-          {bookingData &&
-            bookingData.map((ongoing) => (
+          {bookingsData &&
+            bookingsData.map((ongoing) => (
               <HotelCard
                 key={ongoing.id}
                 name={ongoing.name}
@@ -155,17 +157,18 @@ export default function HomeScreen({ navigation }) {
                 price={ongoing.price}
                 rating="4.8"
                 reviews={randomGenerateReviews()}
-                booked={ongoing.state === "Ongoing"}
+                booked={ongoing.state === Ongoing}
+                onPress={() => { alert('open hotel') }}
               />
             ))}
         </ScrollView>
       )) || (
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>
-            Logined in users see their bookings
-          </Text>
-        </View>
-      )}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>
+              Logined in users see their bookings
+            </Text>
+          </View>
+        )}
     </ScrollView>
   );
 }

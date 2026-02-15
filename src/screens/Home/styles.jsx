@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { defaultTheme } from "../../helpers/styleHelper";
 
 export const styles = StyleSheet.create({
   container: {
@@ -16,42 +17,27 @@ export const styles = StyleSheet.create({
     height: 100,
     borderRadius: 8,
   },
-  searchContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#F5F5F5',
-    borderBlockColor: '#1AB65C',
-    borderWidth: 0.5,
-    margin: 20,
-    padding: 5, 
-    borderRadius: 15, 
-    alignItems: 'center'
-  },
-  searchInput: {
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 16
-  },
   categoryScroll: {
     paddingLeft: 20,
     marginBottom: 20
   },
-  categoryBtn: {
+  tab: {
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#1AB65C',
+    borderColor: defaultTheme.primaryColor,
     marginRight: 10,
   },
-  categoryBtnActive: {
-    backgroundColor: '#1AB65C'
+  activeTab: {
+    backgroundColor: defaultTheme.primaryColor
   },
-  categoryText: {
-    color: '#1AB65C',
+  tabText: {
+    color: defaultTheme.primaryColor,
     fontWeight: 'bold',
     fontSize: 10
   },
-  categoryTextActive: {
+  activeTabText: {
     color: '#fff'
   },
   sectionHeader: {
@@ -65,11 +51,11 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   seeAll: {
-    color: '#1AB65C',
+    color: defaultTheme.primaryColor,
     fontWeight: 'bold'
   },
   featuredScroll: {
     paddingLeft: 20,
-    marginBottom: 10
+    marginBottom: 20
   },
 });
