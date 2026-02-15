@@ -5,14 +5,15 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Search from "../../components/Search";
 import HotelCard from "../../components/HotelCard";
 
-import { useHotel } from "../../contexts/hotels/useHotel";
 import { randomGenerateReviews } from "../../helpers/commonHelper";
+import { PerNightSearch } from "../../shared/constants";
+import { useHotel } from "../../contexts/hotels/useHotel";
 
 import { styles } from "./styles";
 
 export default function SearchScreen() {
   const buttomTabHeight =
-    2 * (Math.round(useBottomTabBarHeight()?.toFixed(2) ?? 0) + 3);
+    2 * (Math.round(useBottomTabBarHeight()?.toFixed(2) ?? 0) -20);
 
   const [refreshing, setRefreshing] = useState(false);
   const [hotelsData, setHotelsData] = useState([]);
@@ -57,6 +58,7 @@ export default function SearchScreen() {
               rating={item.ratings}
               reviews={randomGenerateReviews()}
               booked={false}
+              kind={PerNightSearch}
             />
           )}
           keyExtractor={(item) => item.id}
