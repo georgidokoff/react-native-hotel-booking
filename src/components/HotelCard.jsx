@@ -1,7 +1,10 @@
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
+import { EUR } from '../shared/constants'
+
 import { styles } from './styles'
+import { defaultTheme } from "../helpers/styleHelper";
 
 export default function HotelCard({
     name,
@@ -12,27 +15,54 @@ export default function HotelCard({
     imageUrl,
     rating,
     reviews,
-    booked
+    booked,
+    feature,
+    kind,
+    style,
+    onPress
 }) {
     return (
-        <View style={styles.listItem}>
-            <Image
-                source={{ uri: imageUrl }}
-                style={styles.listImage}
-            />
-            <View style={styles.listContent}>
-                <Text style={styles.listName}>{name}</Text>
-                <Text style={styles.listLocation}>{country}, {city}</Text>
-                <View style={styles.listRatingRow}>
-                    <Ionicons name="star" size={14} color="#FFD700" />
-                    <Text style={styles.listRatingText}>{rating} <Text style={styles.reviewText}>({reviews} reviews)</Text></Text>
+        <TouchableOpacity onPress={onPress}>
+            <View style={[feature ? styles.featuredCard : styles.listItem, { ...style }]}>
+                <Image
+                    source={{ uri: imageUrl }}
+                    style={[feature ? styles.featuredImage : styles.listImage, { ...style }]}
+                />
+                {
+                    feature &&
+                    <View style={styles.ratingBadge}>
+                        <Ionicons name="star" size={12} color={defaultTheme.white} />
+                        <Text style={styles.ratingText}>{rating}</Text>
+                    </View>
+                }
+                <View style={[feature ? styles.featuredOverlay : styles.listContent, { ...style }]}>
+                    <Text style={[feature ? styles.featuredName : styles.listName, { ...style }]}>{name}</Text>
+                    <Text style={[feature ? styles.featuredLocation : styles.listLocation, , { ...style }]}>{country}, {city}</Text>
+                    {!feature &&
+                        <View style={[styles.listRatingRow, { ...style }]}>
+                            <Ionicons name="star" size={14} color={defaultTheme.rating} />
+                            <Text style={[styles.listRatingText, { ...style }]}>{rating}
+                                <Text style={[styles.reviewText, { ...style }]}>({reviews} reviews)
+                                </Text>
+                            </Text>
+                        </View>}
+                    {feature &&
+                        <View style={styles.priceRow}>
+                            <Text style={styles.featuredPrice}>{EUR} {price}
+                                <Text style={styles.perNight}>{kind}
+                                </Text>
+                            </Text>
+                            <Ionicons name="bookmark-outline" size={28} color={defaultTheme.white} />
+                        </View>}
                 </View>
+                {
+                    !feature &&
+                    <View style={[styles.listPriceInfo, { ...style }]}>
+                        <Text style={[styles.listPrice, { ...style }]}>{EUR} {price}</Text>
+                        <Text style={[styles.perNightSmall, { ...style }]}>{kind}</Text>
+                        <Ionicons name="bookmark" size={20} color={booked ? defaultTheme.primaryColor : defaultTheme.greyColor} style={{ marginTop: 5 }} />
+                    </View>}
             </View>
-            <View style={styles.listPriceInfo}>
-                <Text style={styles.listPrice}>€ {price}</Text>
-                <Text style={styles.perNightSmall}>/ night</Text>
-                <Ionicons name="bookmark" size={20} color={booked ? "#1AB65C" : "#9E9E9E"} style={{ marginTop: 5 }} />
-            </View>
-        </View>
+        </TouchableOpacity>
     )
 };

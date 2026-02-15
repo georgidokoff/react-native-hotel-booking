@@ -46,6 +46,8 @@ export const getStatusStyles = (status) => {
 };
 
 export const defaultTheme = {
-    primaryColor:"#1AB65C",
-    greyColor:"#9E9E9E", 
+    primaryColor: "#1AB65C",
+    greyColor: "#9E9E9E",
+    white: "#fff",
+    rating: "#FFD700",
 }
