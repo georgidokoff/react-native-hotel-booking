@@ -12,6 +12,7 @@ import { usePersistedState } from "../../hooks/usePersistedState.js";
 import { authKey, Canceled, CanceledNRefunded, Ongoing } from "../../shared/constants.js";
 import { tabs } from "../../helpers/commonHelper.js";
 import { useBooking } from "../../contexts/bookings/useBooking.js";
+import { useHotel } from "../../contexts/hotels/useHotel.js";
 
 import { styles } from "./styles";
 
@@ -19,6 +20,7 @@ export default function BookingScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [auth] = usePersistedState(authKey, null);
   const { getByUserId, update } = useBooking();
+  const { hotels } = useHotel();
 
   const [activeTab, setActiveTab] = useState(Ongoing);
   const [bookingsData, setBookingsData] = useState([]);
@@ -78,7 +80,7 @@ export default function BookingScreen() {
           />
         ))}
       </View>
-
+      
       <FlatList
         data={
           bookingsData && bookingsData.filter((od) => od.state === activeTab)
@@ -89,7 +91,13 @@ export default function BookingScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <BookingCard
-            item={item}
+            item={{
+              ...item,
+              userFullname: auth?.user?.name,
+              userPhone: auth?.user?.phone,
+              kind: hotels?.find(h => h?.id === item?.hotelId)?.kind,
+              occupancy: hotels?.find(h => h?.id === item?.hotelId)?.occupancy,
+            }}
             status={activeTab}
             onCancelBookingCard={cancelBookingCardHandler}
           />

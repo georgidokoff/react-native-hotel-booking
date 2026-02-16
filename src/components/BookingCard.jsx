@@ -80,10 +80,10 @@ export default function BookingCard({ item, status, onCancelBookingCard }) {
         bookingItem={{
           ...item,
           qrCOdeValue: item.name,
-          resourceTypeName: `${item.name}\nStandart room`,
-          occupancy: 3,
-          userFullname: "Ivan Ivanov",
-          userPhone: "+359888123123"
+          resourceTypeName: `${item.name ?? ''}\n${item.kind ?? ''}`,
+          occupancy: `${item.occupancy ?? ''}`,
+          userFullname: `${item.userFullname ?? ''}`,
+          userPhone: `${item.userPhone ?? ''}`,
         }}
         onCloseViewTicket={onCloseViewTicketHandler}
       />
