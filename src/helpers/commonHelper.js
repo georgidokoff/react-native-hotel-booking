@@ -9,6 +9,10 @@ export const randomGenerateReviews = () => {
   return getRandomInteger(500, 700);
 }
 
+export const getSearchFieldByName = (name, input) => {
+  return String(name)?.toLocaleLowerCase()?.includes(input?.toLocaleLowerCase())
+}
+
 export const tabs = ["Ongoing", "Completed", "Canceled"];
 
 export const categories = ["Recommended", "Popular", "Trending", "Luxury"];

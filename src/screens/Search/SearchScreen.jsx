@@ -5,7 +5,7 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Search from "../../components/Search";
 import HotelCard from "../../components/HotelCard";
 
-import { randomGenerateReviews } from "../../helpers/commonHelper";
+import { randomGenerateReviews, getSearchFieldByName } from "../../helpers/commonHelper";
 import { PerNightSearch } from "../../shared/constants";
 import { useHotel } from "../../contexts/hotels/useHotel";
 
@@ -13,10 +13,11 @@ import { styles } from "./styles";
 
 export default function SearchScreen() {
   const buttomTabHeight =
-    2 * (Math.round(useBottomTabBarHeight()?.toFixed(2) ?? 0) -20);
+    2 * (Math.round(useBottomTabBarHeight()?.toFixed(2) ?? 0) - 20);
 
   const [refreshing, setRefreshing] = useState(false);
   const [hotelsData, setHotelsData] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
 
   const { hotels, getAllHandler } = useHotel();
 
@@ -34,20 +35,36 @@ export default function SearchScreen() {
       });
   }, []);
 
+  const hotelSearchDataHandler = () => {
+    return hotelsData &&
+      hotelsData
+        .filter((hotel) => hotel.id !== 0 &&
+          (
+            (!searchInput || getSearchFieldByName(hotel?.name, searchInput)) ||
+            (!searchInput || getSearchFieldByName(hotel?.country_code, searchInput)) ||
+            (!searchInput || getSearchFieldByName(hotel?.city, searchInput)) ||
+            (!searchInput || getSearchFieldByName(hotel?.kind, searchInput)) ||
+            (!searchInput || getSearchFieldByName(hotel?.occupancy, searchInput))
+          ));
+  }
+
   useEffect(() => {
     setHotelsData(hotels);
   }, []);
-
+  console.log(searchInput)
   return (
     <View>
-      <Search />
+      <Search
+        input={searchInput}
+        setInput={setSearchInput}
+      />
 
       <View style={[{ ...styles }, { marginBottom: buttomTabHeight }]}>
         <FlatList
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          data={hotelsData && hotelsData.filter((h) => h.id !== 0)}
+          data={hotelSearchDataHandler()}
           renderItem={({ item }) => (
             <HotelCard
               name={item.name}
