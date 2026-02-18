@@ -11,7 +11,7 @@ import { useHotel } from "../../contexts/hotels/useHotel";
 
 import { styles } from "./styles";
 
-export default function SearchScreen() {
+export default function SearchScreen({ navigation }) {
   const buttomTabHeight =
     2 * (Math.round(useBottomTabBarHeight()?.toFixed(2) ?? 0) - 20);
 
@@ -51,7 +51,13 @@ export default function SearchScreen() {
   useEffect(() => {
     setHotelsData(hotels);
   }, []);
-  console.log(searchInput)
+
+  const loadHotelHandler = (hotel) => {
+    navigation.navigate('Hotel', {
+      ...hotel
+    });
+  }
+
   return (
     <View>
       <Search
@@ -76,6 +82,7 @@ export default function SearchScreen() {
               reviews={randomGenerateReviews()}
               booked={false}
               kind={PerNightSearch}
+              onPress={() => loadHotelHandler(item)}
             />
           )}
           keyExtractor={(item) => item.id}
