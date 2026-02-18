@@ -15,6 +15,7 @@ import { ImagesAssets } from "../../assets/images";
 
 import { defaultTheme } from "../helpers/styleHelper";
 import { styles } from "./styles";
+import SearchNavigator from "./SearchNavigator.jsx";
 
 const DisabledTabBarButton = (props) => {
   return (
@@ -48,13 +49,14 @@ export default function RootNavigator() {
       />
 
       <Tabs.Screen
-        name="Search"
-        component={SearchScreen}
+        name="SearchTab"
+        component={SearchNavigator}
         options={{
           headerTitle: "Find hotel",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="search" size={size} color={color} />
           ),
+          headerShown: false,
         }}
       />
 
