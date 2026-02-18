@@ -1,0 +1,100 @@
+import { useState } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { EUR, PerNightSearch } from '../../shared/constants';
+
+import { defaultTheme } from '../../helpers/styleHelper';
+import { styles } from './styles'
+
+const DetailIcon = ({ name, label, color }) => (
+    <View style={styles.detailItem}>
+        <MaterialCommunityIcons name={name} size={28} color={color} />
+        <Text style={styles.detailLabel}>{label}</Text>
+    </View>
+);
+
+export default function HotelScreen({ navigation, route }) {
+    const [hotel] = useState(route.params || {})
+    console.log(navigation);
+    const bookNowHandler = async () => {
+        console.log('book now');
+
+        navigation.navigate('BookingDate',{
+            ...hotel
+        });
+    }
+
+    return (
+        <View style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                {/* Hero Image Section */}
+                <View style={styles.heroContainer}>
+                    <Image
+                        source={{ uri: hotel.image_url }}
+                        style={styles.mainImage}
+                    />
+
+                    {/* Pagination Dots */}
+                    <View style={styles.paginationRow}>
+                        <View style={[styles.dot, styles.activeDot]} />
+                        <View style={styles.dot} /><View style={styles.dot} /><View style={styles.dot} />
+                    </View>
+                </View>
+
+                <View style={styles.detailsContent}>
+                    <Text style={styles.hotelName}>{hotel.name}</Text>
+                    <View style={styles.locationRow}>
+                        <Ionicons name="location" size={18} color={defaultTheme.primaryColor} />
+                        <Text style={styles.locationText}>{hotel.location}</Text>
+                    </View>
+
+                    <View style={styles.divider} />
+
+                    {/* Gallery Section */}
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>Gallery Photos</Text>
+                        {/* Implement load all images */}
+                        {/* <TouchableOpacity>
+                            <Text style={styles.seeAllText}>See All
+                            </Text>
+                        </TouchableOpacity> */}
+                    </View>
+                    {hotel.gallery &&
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.galleryScroll}>
+                            {hotel.gallery.map((image_url) =>
+                                <Image source={{ uri: image_url }} style={styles.galleryItem} />
+                            )}
+                        </ScrollView>
+                    }
+
+                    {/* Details Icons */}
+                    <Text style={styles.sectionTitle}>Details</Text>
+                    <View style={styles.iconGrid}>
+                        <DetailIcon name="office-building" label="Hotels" color={defaultTheme.primaryColor} />
+                        <DetailIcon name="bed-outline" label="4 Bedrooms" color={defaultTheme.primaryColor} />
+                        <DetailIcon name="bathtub-outline" label="2 Bathrooms" color={defaultTheme.primaryColor} />
+                        <DetailIcon name="arrow-expand-all" label="4000 sqft" color={defaultTheme.primaryColor} />
+                    </View>
+
+                    <Text style={styles.sectionTitle}>Description</Text>
+                    <Text style={styles.descriptionText}>
+                        {hotel.description}
+                    </Text>
+                </View>
+            </ScrollView>
+
+            {/* Booking Footer */}
+            <SafeAreaView style={styles.footer}>
+                <View style={styles.priceRow}>
+                    <Text style={styles.priceAmount}>{EUR}{' '}{hotel.price_per_night}</Text>
+                    <Text style={styles.priceUnit}>{' '}{PerNightSearch}</Text>
+                </View>
+                <TouchableOpacity style={styles.bookBtn} onPress={bookNowHandler}>
+                    <Text style={styles.bookBtnText}>Book Now!</Text>
+                </TouchableOpacity>
+            </SafeAreaView>
+        </View>
+    );
+};
