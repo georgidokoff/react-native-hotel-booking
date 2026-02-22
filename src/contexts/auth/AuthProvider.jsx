@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { callLogin, callRegister, callLoginGuest } from "../../services/authService.js";
+import { callLogin, callRegister, callLoginGuest, callLogout } from "../../services/authService.js";
 import { usePersistedState } from "../../hooks/usePersistedState.js";
 
 export const AuthContext = createContext({
@@ -12,8 +12,8 @@ export const AuthContext = createContext({
     login: async (email, password) => { },
     register: async (email, password, name) => { },
     loginGuest: async () => { },
+    logout: async () => { },
     clearError: () => { },
-    logout: () => { },
 });
 
 export function AuthProvider({ children }) {
@@ -29,8 +29,8 @@ export function AuthProvider({ children }) {
         try {
             setIsLoading(true);
             const response = await callLogin(login, password);
-            
-            let user ={
+
+            let user = {
                 id: response?.objectId,
                 email: response?.email,
                 name: response?.name,
@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
             }
 
             const accessToken = response['user-token'];
-            
+
             setAuth({ user, accessToken });
         } catch (err) {
             setError(err.message || 'An error occurred during login');
@@ -55,9 +55,9 @@ export function AuthProvider({ children }) {
             const response = await callRegister(email, password, name);
 
             if (response?.userStatus === "ENABLED") {
-                 await login(email, password);
+                await login(email, password);
             }
-			
+
         } catch (err) {
             setError(err.message || 'An error occurred during registration');
         }
@@ -65,7 +65,7 @@ export function AuthProvider({ children }) {
             setIsLoading(false);
         }
     }
-    
+
     const loginGuest = async () => {
         try {
             setIsLoading(true);
@@ -80,7 +80,7 @@ export function AuthProvider({ children }) {
             }
             const accessToken = response['user-token'];
             setAuth({ user, accessToken });
-            
+
         } catch (err) {
             setError(err.message || 'An error occurred during guest login');
         } finally {
@@ -99,14 +99,18 @@ export function AuthProvider({ children }) {
         login,
         register,
         loginGuest,
-        logout: () => {
-            setAuth({
-                accessToken: null,
-                user: null,
-            });
+        logout: async () => {
+            await callLogout(auth?.accessToken)
+                .catch((err) => console.log(err))
+                .finally(() => {
+                    setAuth({
+                        accessToken: null,
+                        user: null,
+                    })
+                });
         },
     };
-    
+
     return (
         <AuthContext.Provider value={contextValue}>
             {children}
