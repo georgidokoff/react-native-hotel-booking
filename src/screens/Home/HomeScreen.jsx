@@ -155,7 +155,7 @@ export default function HomeScreen({ navigation }) {
                     {bookingsData &&
                         bookingsData.map((ongoing) => (
                             <HotelCard
-                                key={ongoing.id}
+                                key={ongoing.created}
                                 name={ongoing.name}
                                 imageUrl={ongoing.imageUrl}
                                 city={ongoing.city}

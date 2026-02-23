@@ -88,7 +88,7 @@ export default function BookingScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.created}
         renderItem={({ item }) => (
           <BookingCard
             item={{
