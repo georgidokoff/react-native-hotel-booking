@@ -7,7 +7,7 @@ export const TicketModal = ({ bookingItem, isVisible, onCloseViewTicket }) => {
   return (
     <Modal
       animationType="slide"
-      transparent={true}
+      transparent={false}
       visible={isVisible}
       onRequestClose={onCloseViewTicket}
     >

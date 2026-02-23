@@ -28,7 +28,12 @@ export const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 30
     },
-
+    calendarTheme: {
+        todayTextColor: defaultTheme.primaryColor,
+        arrowColor: defaultTheme.primaryColor,
+        monthTextColor: '#212121',
+        textMonthFontWeight: 'bold',
+    },
     // Date and Counter
     dateRow: {
         flexDirection: 'row',
@@ -62,11 +67,14 @@ export const styles = StyleSheet.create({
     },
 
     // Buttons
-    continueBtn: {
+    payBtn: {
         backgroundColor: defaultTheme.primaryColor,
         borderRadius: 30,
-        paddingVertical: 18,
-        alignItems: 'center'
+        height: 58,
+        width: '100%',
+        justifyContent: "center",
+        alignItems: "center",
+        opacity: 0.8,
     },
     viewTicketBtn: {
         backgroundColor: defaultTheme.primaryColor,
@@ -76,7 +84,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 15
     },
-    continueBtnText: {
+    payBtnText: {
         color: defaultTheme.white,
         fontSize: 18,
         fontWeight: 'bold'
@@ -84,7 +92,8 @@ export const styles = StyleSheet.create({
     footer: {
         borderTopWidth: 1,
         borderColor: '#EEEEEE',
-        padding: 20,
+        padding: 0,
+        marginHorizontal: 24,
         alignItems: 'center'
     },
     totalText: {

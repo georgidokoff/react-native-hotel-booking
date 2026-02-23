@@ -8,12 +8,16 @@ export async function getByUserId(userId, accessToken) {
     return result.data;
 }
 
-export async function create(bookingData,userId, accessToken) {
+export async function create(bookingData, accessToken) {
     api.defaults.headers.common['user-token'] = accessToken;
 
-    const result = await api.post('/bookings', { ...bookingData, userId });
-
-    return result.data;
+    try {
+        const result = await api.post('/bookings', bookingData);
+        return result.data;
+    } catch (error) {
+        console.error("Error creating booking:", error.response ? error.response.data : error.message);
+        throw new Error("Failed to create booking. Please check your permissions.");
+    }
 }
 
 export async function update(bookingData, accessToken) {

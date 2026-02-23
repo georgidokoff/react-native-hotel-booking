@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { defaultTheme } from "../helpers/styleHelper";
 
 export const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F8F8F8" },
@@ -96,10 +97,14 @@ export const styles = StyleSheet.create({
     borderTopRightRadius: 30,
   },
   downloadButton: {
-    backgroundColor: "#1AB65C",
+    backgroundColor: defaultTheme.primaryColor,
     paddingVertical: 18,
     borderRadius: 35,
     alignItems: "center",
   },
-  downloadText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
+  downloadText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold"
+  },
 });

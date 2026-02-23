@@ -8,10 +8,10 @@ import {
 
 export const BookingContext = createContext({
   bookings: [],
-  create(bookingData, accessToken) {},
-  getByUserId(userId, accessToken) {},
-  update(bookingData, accessToken) {},
-  remove(bookingId, accessToken) {},
+  async create(bookingData, accessToken) {},
+  async getByUserId(userId, accessToken) {},
+  async update(bookingData, accessToken) {},
+  async remove(bookingId, accessToken) {},
 });
 
 export function BookingProvider({ children }) {
@@ -29,9 +29,9 @@ export function BookingProvider({ children }) {
     }
   };
 
-  const createHandler = async (bookingData, userId, accessToken) => {
+  const createHandler = async (bookingData, accessToken) => { console.log(bookingData);console.log(accessToken);
     try {
-      const newbooking = await create(bookingData, userId, accessToken);
+      const newbooking = await create(bookingData, accessToken);
 
       setBookings((prevbookings) => [...prevbookings, newbooking]);
 
