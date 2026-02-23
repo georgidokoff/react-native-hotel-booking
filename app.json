@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "react-native-hotel-booking",
+    "name": "Hotel booking",
     "slug": "react-native-hotel-booking",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,14 +13,16 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.reactnativehotelbooking"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.reactnativehotelbooking"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

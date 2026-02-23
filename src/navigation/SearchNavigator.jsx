@@ -15,9 +15,23 @@ export default function SearchNavigator({ }) {
     const Stack = createNativeStackNavigator();
 
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                headerStatusBarHeight: 0,
+                headerStyle: {
+                    height: 100,
+                },
+            }}
+        >
             <Stack.Screen name="Search"
                 component={SearchScreen}
+                options={{
+                    headerTitle: 'Search',
+                    headerLeft: () => (
+                        <View style={styles.nestedNavigatorView}>
+                        </View>
+                    ),
+                }}
             />
 
             <Stack.Screen name="Hotel"

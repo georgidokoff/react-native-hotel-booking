@@ -15,14 +15,21 @@ export default function HomeNavigator({ }) {
     const Stack = createNativeStackNavigator();
 
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                headerStatusBarHeight: 0,
+                headerStyle: {
+                    height: 100,
+                },
+            }}
+        >
             <Stack.Screen
                 name="Welcome"
                 component={HomeScreen}
                 options={{
                     headerTitle: 'Hotel booking',
                     headerLeft: () => (
-                        <View style={styles.homeNavigatorView}>
+                        <View style={styles.nestedNavigatorView}>
                             <Image
                                 source={ImagesAssets.logo}
                                 style={styles.stackHeaderLeft}
@@ -37,7 +44,7 @@ export default function HomeNavigator({ }) {
                 component={HotelScreen}
                 options={{ headerTitle: 'Hotel Details' }}
             />
-            
+
             <Stack.Screen
                 name="BookingDate"
                 component={BookingDateScreen}

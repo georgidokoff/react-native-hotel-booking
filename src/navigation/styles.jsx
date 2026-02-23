@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     tabLabel: {
         fontSize: 12,
         color: "#9E9E9E",
-        marginTop: 4
+        marginTop: 8
     },
     tabLabelActive: {
         color: "#1AB65C",
@@ -29,12 +29,13 @@ export const styles = StyleSheet.create({
             paddingVertical: 10,
             justifyContent: "space-around",
             backgroundColor: "#fff",
+            paddingTop: 12
         },
         tabBarActiveTintColor: "#1AB65C",
         tabBarInactiveTintColor: "#9E9E9E",
         tabBarLabelStyle: {
             fontSize: 12,
-            marginTop: 4,
+            marginTop: 8,
         },
         headerLeftContainerStyle: {
             paddingLeft: 32
@@ -45,6 +46,12 @@ export const styles = StyleSheet.create({
         headerRightContainerStyle: {
             marginRight: 20
         },
+        // headerStyle: {
+        //     height: 100,              
+        //     backgroundColor: '#fff', 
+        // },
+        headerStatusBarHeight: 0,
+        nargubTop: 16
     },
     stackHeaderLeft: {
         width: 32,
@@ -52,8 +59,11 @@ export const styles = StyleSheet.create({
         marginLeft: -20,
         marginRight: 0,
     },
-    homeNavigatorView: {
-        padding: 16,
-        backgroundColor:"#fff"
+    nestedNavigatorView: {
+        //padding: 16,
+        paddingLeft: 20,
+        paddingRight: 16,
+        backgroundColor: "#fff",
+        // height: 100,
     }
 });

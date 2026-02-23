@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider, SafeAreaView, initialWindowMetrics } from 'react-native-safe-area-context';
 
 import RootNavigator from "./navigation/RootNavigator";
 import { AuthProvider } from "./contexts/auth/AuthProvider.jsx";
@@ -9,18 +10,23 @@ import { BookingProvider } from "./contexts/bookings/BookingProvider.jsx";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <StatusBar style="auto" />
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <SafeAreaView style={{ flex: 1}}>
 
-      <AuthProvider>
-        <HotelProvider>
-          <UserProvider>
-            <BookingProvider>
-              <RootNavigator />
-            </BookingProvider>
-          </UserProvider>
-        </HotelProvider>
-      </AuthProvider>
-    </NavigationContainer>
+        <NavigationContainer>
+          <StatusBar style="auto" />
+
+          <AuthProvider>
+            <HotelProvider>
+              <UserProvider>
+                <BookingProvider>
+                  <RootNavigator />
+                </BookingProvider>
+              </UserProvider>
+            </HotelProvider>
+          </AuthProvider>
+        </NavigationContainer>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

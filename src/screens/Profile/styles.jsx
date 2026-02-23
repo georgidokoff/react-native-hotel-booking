@@ -88,12 +88,12 @@ export const styles = StyleSheet.create({
     padding: 24,
   },
   continueButton: {
-    backgroundColor: "#1AB65C",
+    backgroundColor: defaultTheme.primaryColor,
     borderRadius: 30,
     height: 58,
     justifyContent: "center",
     alignItems: "center",
-    opacity: 0.8, // Per image, it looks slightly translucent or muted before focus
+    opacity: 0.8, 
   },
   continueText: {
     color: "#fff",
