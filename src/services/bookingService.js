@@ -1,10 +1,10 @@
 import { api } from "./api.js";
 
-export async function getByUserId(userId, accessToken) {
+export async function getByUserId(userId, accessToken, pageSize = null, offset = null) {
     const equalSymbol = '%20%3D%20';
     api.defaults.headers.common['user-token'] = accessToken;
 
-    const result = await api.get(`/bookings?where=userId${equalSymbol}'${userId}'`);
+    const result = await api.get(`/bookings?where=userId${equalSymbol}'${userId}'&sortBy=created%20desc&pageSize=${pageSize ?? 100}&offset=${offset ?? 0}`);
     return result.data;
 }
 
