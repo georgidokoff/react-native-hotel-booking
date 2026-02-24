@@ -6,13 +6,14 @@ import {
     RefreshControl,
     Image,
 } from "react-native";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-import { categories, randomGenerateReviews } from "../../helpers/commonHelper";
+import { categories, getSearchFieldByName, randomGenerateReviews, setDefaultRefresh } from "../../helpers/commonHelper";
 import { authKey, Ongoing, Recommended, Authorised, PerNight } from "../../shared/constants";
 import { usePersistedState } from "../../hooks/usePersistedState";
 import { useBooking } from "../../contexts/bookings/useBooking";
+import { useUser } from "../../contexts/users/useUser";
 import { useHotel } from "../../contexts/hotels/useHotel";
 
 import HotelCard from "../../components/HotelCard";
@@ -23,31 +24,53 @@ import { ImagesAssets } from "../../../assets/images";
 import { styles } from "./styles";
 
 export default function HomeScreen({ navigation }) {
+    const [seeAll, setSeeAll] = useState(false);
     const [activeTab, setActiveTab] = useState(Recommended);
     const [refreshing, setRefreshing] = useState(false);
+    const [searchInput, setSearchInput] = useState('');
     const { getByUserId } = useBooking();
+    const { user } = useUser();
     const { hotels } = useHotel();
     const [hotelsData, setHotelsData] = useState(hotels || []);
-    const [auth] = usePersistedState(authKey, {
+    const [auth, setAuth] = usePersistedState(authKey, {
         user: null,
         accessToken: null,
     });
-    const [user, setUser] = useState(auth?.user || null);
+
     const [bookingsData, setBookingsData] = useState([]);
 
     const tabBarHeight = useBottomTabBarHeight();
 
-    const fetchingBookings = async () => {
-        await getByUserId(auth.user.id, auth.accessToken)
-            .then((booking) => {
-                setBookingsData(booking?.filter((b) => b?.state === Ongoing));
-                setRefreshing(false);
-            })
-            .catch((err) => {
-                console.log(err);
-                setRefreshing(false);
-            });
-    };
+    const fetchingBookings = useCallback(async () => {
+        if (auth) {
+            await getByUserId(auth.user.id, auth.accessToken)
+                .then((booking) => {
+                    setBookingsData(booking?.filter((b) => b?.state === Ongoing));
+                    setRefreshing(false);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setRefreshing(false);
+                });
+        }
+    }, [auth.user, auth.accessToken, getByUserId]);
+
+    const filteredBookings = useMemo(() => {
+        const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;
+
+        return bookingsData
+            .filter((booked) => booked.id !== 0 &&
+                (
+                    (seeAll || booked.created > threeDaysAgo) &&
+                    (
+                        (!searchInput || getSearchFieldByName(booked?.name, searchInput)) ||
+                        (!searchInput || getSearchFieldByName(booked?.country_code, searchInput)) ||
+                        (!searchInput || getSearchFieldByName(booked?.city, searchInput)) ||
+                        (!searchInput || getSearchFieldByName(booked?.kind, searchInput)) ||
+                        (!searchInput || getSearchFieldByName(booked?.occupancy, searchInput))
+                    )
+                ));
+    }, [bookingsData, seeAll, searchInput]);
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
@@ -57,21 +80,43 @@ export default function HomeScreen({ navigation }) {
         }
 
         if (hotels?.length > 0) {
-            setHotelsData(hotels); ß
+            setHotelsData(hotels);
+        } else {
+            setRefreshing(false);
         }
-    }, [auth]);
 
-    useMemo(() => {
+        if (auth?.user) {
+            setAuth((prevAuth) => ({
+                ...prevAuth,
+                user: {
+                    ...prevAuth.user,
+                    name: user?.name ?? prevAuth.user.name,
+                    phone: user?.phone ?? prevAuth.user.phone,
+                },
+            }));
+        }
+
+    }, [auth, fetchingBookings, hotels]);
+
+    useEffect(() => {
         setHotelsData(hotels);
     }, [hotels]);
 
     useEffect(() => {
         if (auth?.user) {
-            setUser(auth.user);
-
             fetchingBookings();
         }
     }, [auth]);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            if (auth?.user) {
+                fetchingBookings();
+            }
+        });
+
+        return unsubscribe;
+    }, [navigation, auth, fetchingBookings]);
 
     const loadHotelHandler = (hotel) => {
         navigation.navigate('Hotel', {
@@ -91,15 +136,18 @@ export default function HomeScreen({ navigation }) {
             }
         >
             {/* --- Welcome Text --- for authenticate user*/}
-            {user?.status === Authorised && (
+            {auth?.user?.status === Authorised && (
                 <View style={[styles.sectionHeader, { justifyContent: 'flex-start', padding: 10, marginBottom: 10 }]}>
-                    <Text style={[styles.sectionTitle, { fontSize: 28 }]}>Hello, {user.name}{'  '}</Text>
+                    <Text style={[styles.sectionTitle, { fontSize: 28 }]}>Hello, {auth.user.name}{'  '}</Text>
                     <Image source={ImagesAssets.waving_hand_light} style={{ width: 40, height: 40 }} />
                 </View>
             )}
 
             {/* Search */}
-            <Search />
+            <Search
+                input={searchInput}
+                setInput={setSearchInput}
+            />
 
             {/* --- Categories --- */}
             <ScrollView
@@ -143,30 +191,29 @@ export default function HomeScreen({ navigation }) {
             </ScrollView>
 
             {/* --- Recently Booked Section --- */}
-            {(user?.status === Authorised && (
+            {(auth?.user?.status === Authorised && (
                 <ScrollView>
                     <View style={styles.sectionHeader}>
                         <Text style={styles.sectionTitle}>Recently Booked</Text>
-                        <TouchableOpacity onPress={() => { alert('load all') }}>
+                        <TouchableOpacity onPress={() => { setSeeAll(true) }}>
                             <Text style={styles.seeAll}>See All</Text>
                         </TouchableOpacity>
                     </View>
 
-                    {bookingsData &&
-                        bookingsData.map((ongoing) => (
-                            <HotelCard
-                                key={ongoing.created}
-                                name={ongoing.name}
-                                imageUrl={ongoing.imageUrl}
-                                city={ongoing.city}
-                                country={ongoing.country}
-                                price={ongoing.price}
-                                rating="4.8"
-                                reviews={randomGenerateReviews()}
-                                booked={ongoing.state === Ongoing}
-                                onPress={() => { alert('open hotel') }}
-                            />
-                        ))}
+                    {filteredBookings.map((ongoing) => (
+                        <HotelCard
+                            key={ongoing.created}
+                            name={ongoing.name}
+                            imageUrl={ongoing.imageUrl}
+                            city={ongoing.city}
+                            country={ongoing.country}
+                            price={ongoing.price}
+                            rating="4.8"
+                            reviews={randomGenerateReviews()}
+                            booked={ongoing.state === Ongoing}
+                            onPress={() => { alert('open hotel') }}
+                        />
+                    ))}
                 </ScrollView>
             )) || (
                     <View style={styles.sectionHeader}>

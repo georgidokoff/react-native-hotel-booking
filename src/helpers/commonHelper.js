@@ -27,6 +27,10 @@ export const getSearchFieldByName = (name, input) => {
     return String(name)?.toLocaleLowerCase()?.includes(input?.toLocaleLowerCase())
 }
 
+export const setDefaultRefresh = (setRefreshing) => {
+    return setRefreshing(false);
+}
+
 export const tabs = ["Ongoing", "Completed", "Canceled"];
 
 export const categories = ["Recommended", "Popular", "Trending", "Luxury"];
