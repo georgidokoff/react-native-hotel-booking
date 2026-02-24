@@ -2,14 +2,16 @@ import {
     useState,
     useEffect
 } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import * as SecureStore from 'expo-secure-store';
+
 export function usePersistedState(key, initialValue) {
     const [state, setState] = useState(initialValue);
 
     useEffect(() => {
         const loadState = async () => {
             try {
-                const storedValue = await AsyncStorage.getItem(key);
+                const storedValue = await SecureStore.getItemAsync(key);
                 if (!storedValue) {
                     return;
                 }
@@ -29,7 +31,7 @@ export function usePersistedState(key, initialValue) {
 
             setState(valueToStore);
 
-            await AsyncStorage.setItem(key, JSON.stringify(valueToStore));
+            await SecureStore.setItemAsync(key, JSON.stringify(valueToStore));
         } catch (err) {
             console.error("Failed to save persisted state:", err);
         }

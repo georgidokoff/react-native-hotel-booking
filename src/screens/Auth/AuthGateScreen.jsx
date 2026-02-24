@@ -17,7 +17,7 @@ export default function AuthGateScreen({ navigation }) {
 
   const signUpHandler = async (email, password) => {
     // validation can be added here
-    await register(email, password);
+    await register(email, password, null);
   };
 
   const guestHandler = async () => {

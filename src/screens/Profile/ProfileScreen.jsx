@@ -10,9 +10,10 @@ import {
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { usePersistedState } from "../../hooks/usePersistedState.js";
+import { authKey } from "../../shared/constants.js";
 import { useUser } from "../../contexts/users/useUser.js";
 
 import { defaultTheme } from "../../helpers/styleHelper";
@@ -20,7 +21,7 @@ import { styles } from "./styles";
 
 export default function ProfileScreen() {
   const { updateUser } = useUser();
-  const [auth, setAuth] = usePersistedState("auth", {
+  const [auth, setAuth] = usePersistedState(authKey, {
     user: null,
     accessToken: null,
   });
@@ -38,7 +39,7 @@ export default function ProfileScreen() {
     user.status = auth.user.status;
 
     const updatedUser = await updateUser(user, auth?.accessToken);
-
+    
     setAuth((prevAuth) => ({
       ...prevAuth,
       user: {
@@ -49,7 +50,7 @@ export default function ProfileScreen() {
       },
     }));
   };
-
+  
   const updateInputHandler = (input, field) => {
     setUser((prevUser) => {
       const updatedUser = { ...prevUser, [field]: input };
@@ -116,7 +117,7 @@ export default function ProfileScreen() {
           icon="email-outline"
           field={"email"}
           text={user?.email || ""}
-          disabled={user?.status === "GUEST"}
+          disabled
         />
 
         <View style={styles.phoneInputRow}>
