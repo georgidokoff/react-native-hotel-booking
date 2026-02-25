@@ -45,3 +45,15 @@ export async function callLogout(accessToken) {
         throw err;
     }
 }
+
+export async function callRefreshToken(accessToken) {
+    try {
+        authApi.defaults.headers.common['user-token'] = accessToken;
+
+        const result = await authApi.get(`/refresh-token`);
+
+        return result.data;
+    } catch (err) {
+        throw err;
+    }
+}

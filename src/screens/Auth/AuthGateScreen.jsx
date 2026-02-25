@@ -14,6 +14,8 @@ export default function AuthGateScreen({ navigation }) {
   const { login, register, loginGuest, isLoading, error, clearError } = useAuth();
 
   const signInHandler = async (email, password) => {
+    clearError();
+    
     // validation can be added here
     const emailValidation = validate(email, emailType);
 
@@ -37,6 +39,8 @@ export default function AuthGateScreen({ navigation }) {
   };
 
   const signUpHandler = async (email, password) => {
+    clearError();
+    
     // validation can be added here
     const emailValidation = validate(email, emailType);
 
@@ -59,6 +63,8 @@ export default function AuthGateScreen({ navigation }) {
   };
 
   const guestHandler = async () => {
+    clearError();
+
     return await loginGuest();
   };
 

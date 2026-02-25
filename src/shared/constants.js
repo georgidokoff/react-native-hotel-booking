@@ -5,6 +5,7 @@ export const Guest = "GUEST";
 export const emailType = "email";
 export const passwordType = "password";
 export const nameType = "name";
+export const phoneType = "phone";
 export const OK = { valid: true };
 export const NOK = { valid: false };
 
@@ -13,6 +14,7 @@ export const bookingKey = "booking";
 
 //booking tab kind
 export const Ongoing = "Ongoing";
+export const Completed = "Completed";
 export const Canceled = "Canceled";
 export const CanceledNRefunded = "Canceled & Refunded";
 export const Recommended = "Recommended";

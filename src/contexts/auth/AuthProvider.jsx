@@ -1,6 +1,8 @@
-import { createContext, useState } from "react";
-import { callLogin, callRegister, callLoginGuest, callLogout } from "../../services/authService.js";
+import { createContext, useState, useCallback } from "react";
+
+import { callLogin, callRegister, callLoginGuest, callLogout, callRefreshToken } from "../../services/authService.js";
 import { usePersistedState } from "../../hooks/usePersistedState.js";
+import { authKey } from "../../shared/constants.js";
 
 export const AuthContext = createContext({
     isLoading: false,
@@ -13,11 +15,12 @@ export const AuthContext = createContext({
     register: async (email, password, name) => { },
     loginGuest: async () => { },
     logout: async () => { },
+    refreshToken: async () => { },
     clearError: () => { },
 });
 
 export function AuthProvider({ children }) {
-    const [auth, setAuth] = usePersistedState("auth", {
+    const [auth, setAuth] = usePersistedState(authKey, {
         accessToken: null,
         user: null,
     });
@@ -92,6 +95,33 @@ export function AuthProvider({ children }) {
         }
     }
 
+    const refreshTokenHandler = useCallback(async () => {
+        try {
+            if (!auth?.accessToken) {
+                throw new Error('No access token available');
+            }
+
+            const response = await callRefreshToken(auth.accessToken);
+            const newAccessToken = response['user-token'];
+
+            setAuth((prevAuth) => ({
+                ...prevAuth,
+                accessToken: newAccessToken,
+            }));
+
+            return newAccessToken;
+        } catch (err) {
+            console.error('Token refresh failed:', err);
+            // Force logout if refresh fails
+            setAuth({
+                accessToken: null,
+                user: null,
+            });
+            setError('Session expired. Please login again.');
+            return { valid: false, message: 'Session expired. Please login again.' };
+        }
+    }, [auth?.accessToken, setAuth]);
+
     const contextValue = {
         isAuthenticated: !!auth.user && !!auth.accessToken && auth.user?.status === 'ENABLED',
         isGuest: !!auth.user && !!auth.accessToken && auth.user?.status === 'GUEST',
@@ -103,6 +133,7 @@ export function AuthProvider({ children }) {
         login,
         register,
         loginGuest,
+        refreshToken: refreshTokenHandler,
         logout: async () => {
             await callLogout(auth?.accessToken)
                 .catch((err) => console.log(err))

@@ -26,9 +26,7 @@ export default function LoginScreen() {
   //   const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
-    return () => {
       setErrorState({ valid: true, message: "" });
-    };
   }, [route.params]);
 
   const onGuestNavigateHandler = () => {

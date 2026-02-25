@@ -26,10 +26,8 @@ export default function RegistrationScreen() {
   // const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
-      return () => {
-        setErrorState({ valid: true, message: "" });
-      };
-    }, [route.params]);
+    setErrorState({ valid: true, message: "" });
+  }, [route.params]);
 
   const onGuestHandlerPress = () => {
     if (onGuestNavigate) {
@@ -61,7 +59,7 @@ export default function RegistrationScreen() {
       setErrorState({ valid: true, message: "" });
     }
   };
-  
+
   const setPasswordHandler = (text) => {
     setPassword(text);
     if (errorState && !errorState.valid) {
@@ -155,7 +153,7 @@ export default function RegistrationScreen() {
           {errorState && !errorState.valid && (
             <Text style={styles.errorText}>{errorState.message}</Text>
           )}
-          
+
           <TouchableOpacity
             style={styles.signBtn}
             onPress={onSignUpHandlerPress}
