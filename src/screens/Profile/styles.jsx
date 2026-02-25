@@ -93,11 +93,36 @@ export const styles = StyleSheet.create({
     height: 58,
     justifyContent: "center",
     alignItems: "center",
-    opacity: 0.8, 
+    opacity: 0.8,
   },
   continueText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  loaderContainer: {
+    position: "relative",
+    paddingHorizontal: '50%',
+    width: 120,
+    height: 120,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  successMessageContainer: {
+    backgroundColor: defaultTheme.white,
+    padding: 12,
+    borderRadius: 30,
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  successMessageText: {
+    color: defaultTheme.primaryColor,
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  errorText: {
+    color: "#F75555",
+    textAlign: "center",
+    marginBottom: 16,
   },
 });
