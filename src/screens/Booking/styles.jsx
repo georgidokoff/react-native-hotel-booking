@@ -45,5 +45,5 @@ export const styles = StyleSheet.create({
     color: "#F75555",
     textAlign: "center",
     marginBottom: 16,
-  },Í
+  },
 });

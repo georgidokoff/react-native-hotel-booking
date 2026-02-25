@@ -8,9 +8,10 @@ import {
     KeyboardAvoidingView,
     Platform,
     ActivityIndicator,
+    RefreshControl,
     Keyboard
 } from "react-native";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { usePersistedState } from "../../hooks/usePersistedState.js";
@@ -24,7 +25,7 @@ import { validate } from "../../helpers/validatorsHelper.js";
 export default function ProfileScreen({ navigation, route }) {
     const [errorState, setErrorState] = useState({ valid: true, message: "" });
     const [successMessage, setSuccessMessage] = useState("");
-
+    const [refreshing, setRefreshing] = useState(false);
     const { updateUser, isLoading, error, clearError } = useUser();
     const phoneInputRef = useRef(null);
     const [auth, setAuth] = usePersistedState(authKey, {
@@ -43,6 +44,21 @@ export default function ProfileScreen({ navigation, route }) {
             setUser(auth.user);
         }
     }, [auth]);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setErrorState({ valid: true, message: "" });
+        setSuccessMessage("");
+
+        if (auth?.user) {
+            setUser(auth.user);
+            setRefreshing(false);
+        }
+
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
+    }, []);
 
     const updateUserHandler = async () => {
         clearError();
@@ -104,10 +120,10 @@ export default function ProfileScreen({ navigation, route }) {
             return updatedUser;
         });
     };
-    
+
     const ProfileInput = ({ placeholder, icon, text, field, disabled }) => {
         const [inputValue, setInputValue] = useState(text);
-        
+
         const handleKeyPress = ({ nativeEvent }) => {
             if (nativeEvent.key === "Enter" && field === "name" && inputValue.trim()) {
                 // Move to phone input if name is filled
@@ -155,7 +171,12 @@ export default function ProfileScreen({ navigation, route }) {
                 </View>
             )}
 
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+            >
                 <View style={styles.avatarContainer}>
                     <View style={[styles.avatarPlaceholder, isLoading ? { display: 'none' } : {}]}>
                         <Ionicons name="person" size={80} color="#E0E0E0" />
@@ -213,7 +234,7 @@ export default function ProfileScreen({ navigation, route }) {
                         <Text style={styles.successMessageText}>{successMessage}</Text>
                     </View>
                 )}
-                
+
                 {errorState && !errorState.valid && (
                     <Text style={styles.errorText}>{errorState.message}</Text>
                 )}
