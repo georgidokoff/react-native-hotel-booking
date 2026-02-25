@@ -50,4 +50,5 @@ export const defaultTheme = {
     greyColor: "#9E9E9E",
     white: "#fff",
     rating: "#FFD700",
+    faceBookColor: "#1877F2",
 }
