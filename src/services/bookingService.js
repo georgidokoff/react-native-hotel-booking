@@ -3,9 +3,13 @@ import { api } from "./api.js";
 export async function getByUserId(userId, accessToken, pageSize = null, offset = null) {
     const equalSymbol = '%20%3D%20';
     api.defaults.headers.common['user-token'] = accessToken;
-
-    const result = await api.get(`/bookings?where=userId${equalSymbol}'${userId}'&sortBy=created%20desc&pageSize=${pageSize ?? 100}&offset=${offset ?? 0}`);
-    return result.data;
+    try {
+        const result = await api.get(`/bookings?where=userId${equalSymbol}'${userId}'&sortBy=created%20desc&pageSize=${pageSize ?? 100}&offset=${offset ?? 0}`);
+        return result.data;
+    } catch (error) {
+        console.error("Error fetching bookings by user ID:", error.response ? error.response.data : error.message);
+        //throw new Error("Failed to fetch bookings. Please check your permissions.");
+    }
 }
 
 export async function create(bookingData, accessToken) {
@@ -16,7 +20,7 @@ export async function create(bookingData, accessToken) {
         return result.data;
     } catch (error) {
         console.error("Error creating booking:", error.response ? error.response.data : error.message);
-        throw new Error("Failed to create booking. Please check your permissions.");
+        //throw new Error("Failed to create booking. Please check your permissions.");
     }
 }
 

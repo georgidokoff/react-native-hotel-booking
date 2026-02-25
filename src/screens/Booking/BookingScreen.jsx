@@ -1,25 +1,28 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import {
   View,
   FlatList,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 
 import BookingCard from "../../components/BookingCard";
 import { Tab } from "../../common/Tab.jsx";
 
 import { usePersistedState } from "../../hooks/usePersistedState.js";
-import { authKey, Canceled, CanceledNRefunded, Ongoing } from "../../shared/constants.js";
+import { authKey, Canceled, CanceledNRefunded, Completed, Ongoing } from "../../shared/constants.js";
 import { tabs } from "../../helpers/commonHelper.js";
 import { useBooking } from "../../contexts/bookings/useBooking.js";
 import { useHotel } from "../../contexts/hotels/useHotel.js";
 
 import { styles } from "./styles";
+import { defaultTheme } from "../../helpers/styleHelper.js";
 
-export default function BookingScreen() {
+export default function BookingScreen({ navigation, route }) {
+  const [errorState, setErrorState] = useState({ valid: true, message: "" });
   const [refreshing, setRefreshing] = useState(false);
   const [auth] = usePersistedState(authKey, null);
-  const { getByUserId, update } = useBooking();
+  const { getByUserId, update, isLoading, error, clearError } = useBooking();
   const { hotels } = useHotel();
 
   const [activeTab, setActiveTab] = useState(Ongoing);
@@ -34,9 +37,14 @@ export default function BookingScreen() {
         })
         .catch((err) => {
           console.error("Error fetching bookings:", err);
+          setErrorState({ valid: false, message: "Error fetching bookings." })
         });
     }
   };
+
+  useEffect(() => {
+    setErrorState({ valid: !error, message: error });
+  }, [route.params, error]);
 
   useMemo(() => {
     fetchBookings();
@@ -53,7 +61,7 @@ export default function BookingScreen() {
   const tabPressHandler = (tab) => {
     setActiveTab(tab);
   };
-
+  
   const cancelBookingCardHandler = async (id) => {
     let canceledBooking = bookingsData.find((od) => od.id === id);
     canceledBooking.state = Canceled;
@@ -69,6 +77,7 @@ export default function BookingScreen() {
 
   return (
     <View style={styles.container}>
+
       <View style={styles.tabContainer}>
         {tabs.map((tab) => (
           <Tab
@@ -80,10 +89,26 @@ export default function BookingScreen() {
           />
         ))}
       </View>
-      
+
+      {isLoading && (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size='large' color={defaultTheme.primaryColor} />
+        </View>
+      )}
+
+      {errorState && !errorState.valid && (
+        <Text style={styles.errorText}>{errorState.message}</Text>
+      )}
+
       <FlatList
         data={
-          bookingsData && bookingsData.filter((od) => od.state === activeTab)
+          bookingsData && bookingsData.filter((od) =>
+            od.state === activeTab ||
+            (
+              activeTab === Completed &&
+              (od.state === Completed || od.state === Ongoing) &&
+              new Date(od.checkOut) < new Date()
+            ))
         }
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

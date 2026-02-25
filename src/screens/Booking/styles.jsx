@@ -41,4 +41,9 @@ export const styles = StyleSheet.create({
   activeTabText: {
     color: "#fff",
   },
+  errorText: {
+    color: "#F75555",
+    textAlign: "center",
+    marginBottom: 16,
+  },Í
 });
