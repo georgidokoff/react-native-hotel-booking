@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
         try {
             setIsLoading(true);
             const response = await callLogin(login, password);
-
+            
             let user = {
                 id: response?.objectId,
                 email: response?.email,
@@ -38,12 +38,14 @@ export function AuthProvider({ children }) {
                 locale: response?.blUserLocale,
                 status: response?.userStatus,
             }
-
+            
             const accessToken = response['user-token'];
-
+            
             setAuth({ user, accessToken });
         } catch (err) {
-            setError(err.message || 'An error occurred during login');
+            // console.log('login error', err, JSON.stringify(err), err.stack);
+            setError('An error occurred during login');
+            return { valid: false, message: 'An error occurred during login' };
         } finally {
             setIsLoading(false);
         }
@@ -59,7 +61,8 @@ export function AuthProvider({ children }) {
             }
 
         } catch (err) {
-            setError(err.message || 'An error occurred during registration');
+            setError('An error occurred during registration');
+            return { valid: false, message: 'An error occurred during registration' };
         }
         finally {
             setIsLoading(false);
@@ -82,7 +85,8 @@ export function AuthProvider({ children }) {
             setAuth({ user, accessToken });
 
         } catch (err) {
-            setError(err.message || 'An error occurred during guest login');
+            setError('An error occurred during guest login');
+            return { valid: false, message: 'An error occurred during guest login' };
         } finally {
             setIsLoading(false);
         }

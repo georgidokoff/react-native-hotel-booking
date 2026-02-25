@@ -1,27 +1,65 @@
 import { useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAuth } from "../../contexts/auth/useAuth.js";
+import { validate } from "../../helpers/validatorsHelper.js";
 
 import { styles } from "./styles";
+import { defaultTheme } from "../../helpers/styleHelper.js";
+import { emailType, passwordType } from "../../shared/constants.js";
 
 export default function AuthGateScreen({ navigation }) {
   const { login, register, loginGuest, isLoading, error, clearError } = useAuth();
 
   const signInHandler = async (email, password) => {
     // validation can be added here
-    await login(email, password);
+    const emailValidation = validate(email, emailType);
+
+    if (!emailValidation?.valid) {
+      // handle invalid email
+      return emailValidation;
+    }
+
+    const passwordValidation = validate(password, passwordType);
+
+    if (!passwordValidation?.valid) {
+      // handle invalid password
+      return passwordValidation;
+    }
+
+    if (error) {
+      return { valid: false, message: error };
+    }
+
+    return await login(email, password);
   };
 
   const signUpHandler = async (email, password) => {
     // validation can be added here
-    await register(email, password, null);
+    const emailValidation = validate(email, emailType);
+
+    if (!emailValidation?.valid) {
+      // handle invalid email
+      return emailValidation;
+    }
+
+    const passwordValidation = validate(password, passwordType);
+    if (!passwordValidation?.valid) {
+      // handle invalid password
+      return passwordValidation;
+    }
+
+    if (error) {
+      return { valid: false, message: error };
+    }
+
+    return await register(email, password, null);
   };
 
   const guestHandler = async () => {
-    await loginGuest();
+    return await loginGuest();
   };
 
   const signUpNavigateHandler = () => {
@@ -43,7 +81,7 @@ export default function AuthGateScreen({ navigation }) {
 
     onSignInHandler();
   };
-
+  
   const onSignInHandler = () => {
     navigation.navigate("Login", {
       onSignIn: signInHandler,
@@ -95,11 +133,16 @@ export default function AuthGateScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isLoading && (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size='large' color={defaultTheme.primaryColor} />
+        </View>
+      )}
       <View style={styles.centerContent}>
         <Text style={styles.headerText}>Let's you in</Text>
 
         <TouchableOpacity style={styles.socialBtn} onPress={guestHandler}>
-          <Ionicons name="enter-outline" size={30} color="#1877F2" />
+          <Ionicons name="enter-outline" size={30} color={defaultTheme.faceBookColor} />
           <Text style={styles.socialBtnText}>Continue as Guest</Text>
         </TouchableOpacity>
 

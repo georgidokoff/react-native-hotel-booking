@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -22,7 +22,14 @@ export default function RegistrationScreen() {
   const [passwordColor, setPasswordColor] = useState(defaultTheme.greyColor);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorState, setErrorState] = useState({ valid: true, message: "" });
   // const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+      return () => {
+        setErrorState({ valid: true, message: "" });
+      };
+    }, [route.params]);
 
   const onGuestHandlerPress = () => {
     if (onGuestNavigate) {
@@ -32,13 +39,33 @@ export default function RegistrationScreen() {
 
   const onSignUpHandlerPress = () => {
     if (onSignUp) {
-      onSignUp(email, password);
+      onSignUp(email, password)
+        .then((validation) => {
+          if (!validation?.valid) {
+            // handle validation error
+            setErrorState(validation);
+          }
+        });
     }
   };
 
   const onSignInHandlerPress = () => {
     if (onSignInNavigate) {
       onSignInNavigate();
+    }
+  };
+
+  const setEmailHandler = (text) => {
+    setEmail(text);
+    if (errorState && !errorState.valid) {
+      setErrorState({ valid: true, message: "" });
+    }
+  };
+  
+  const setPasswordHandler = (text) => {
+    setPassword(text);
+    if (errorState && !errorState.valid) {
+      setErrorState({ valid: true, message: "" });
     }
   };
 
@@ -50,12 +77,12 @@ export default function RegistrationScreen() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.flex}
       >
-        <View>
+        <View style={styles.innerContainer}>
           <Text style={[styles.headerText, { fontSize: 32 }]}>
             Create your Account
           </Text>
 
-          <View style={[styles.inputWrapper, styles.inputActive, {borderColor: emailColor}]}>
+          <View style={[styles.inputWrapper, styles.inputActive, { borderColor: emailColor }]}>
             <Ionicons
               name="mail"
               size={20}
@@ -67,7 +94,7 @@ export default function RegistrationScreen() {
               style={styles.input}
               placeholderTextColor={defaultTheme.greyColor}
               keyboardType="email-address"
-              onChangeText={setEmail}
+              onChangeText={setEmailHandler}
               onFocus={() => {
                 setEmailColor(defaultTheme.primaryColor);
                 setPasswordColor(defaultTheme.greyColor);
@@ -99,7 +126,7 @@ export default function RegistrationScreen() {
                 setPasswordColor(defaultTheme.greyColor);
                 setEmailColor(defaultTheme.greyColor);
               }}
-              onChangeText={setPassword}
+              onChangeText={setPasswordHandler}
             />
             <TouchableOpacity
               onPress={() => setPasswordVisible(!isPasswordVisible)}
@@ -125,6 +152,10 @@ export default function RegistrationScreen() {
             </TouchableOpacity>
           </View> */}
 
+          {errorState && !errorState.valid && (
+            <Text style={styles.errorText}>{errorState.message}</Text>
+          )}
+          
           <TouchableOpacity
             style={styles.signBtn}
             onPress={onSignUpHandlerPress}
@@ -142,7 +173,7 @@ export default function RegistrationScreen() {
             style={styles.socialBtn}
             onPress={onGuestHandlerPress}
           >
-            <Ionicons name="enter-outline" size={30} color="#1877F2" />
+            <Ionicons name="enter-outline" size={30} color={defaultTheme.faceBookColor} />
             <Text style={styles.socialBtnText}>Continue as Guest</Text>
           </TouchableOpacity>
 

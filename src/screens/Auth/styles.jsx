@@ -190,4 +190,14 @@ export const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#EEEEEE",
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#F75555",
+    textAlign: "center",
+    marginBottom: 16,
+  },
 });

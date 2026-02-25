@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -22,7 +22,14 @@ export default function LoginScreen() {
   const [passwordColor, setPasswordColor] = useState(defaultTheme.greyColor);
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
+  const [errorState, setErrorState] = useState({ valid: true, message: "" });
   //   const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      setErrorState({ valid: true, message: "" });
+    };
+  }, [route.params]);
 
   const onGuestNavigateHandler = () => {
     if (onGuestNavigate) {
@@ -38,9 +45,29 @@ export default function LoginScreen() {
 
   const onSignInHandlerPress = () => {
     if (onSignIn) {
-      onSignIn(login, password);
+      onSignIn(login, password)
+        .then((validation) => {
+          if (!validation?.valid) {
+            // handle validation error
+            setErrorState(validation);
+          }
+        });
     }
   };
+
+  const setLoginHandler = (text) => {
+    setLogin(text);
+    if (errorState && !errorState.valid) {
+      setErrorState({ valid: true, message: "" });
+    }
+  }
+
+  const setPasswordHandler = (text) => {
+    setPassword(text);
+    if (errorState && !errorState.valid) {
+      setErrorState({ valid: true, message: "" });
+    }
+  }
 
   return (
     <SafeAreaView
@@ -55,7 +82,7 @@ export default function LoginScreen() {
             Login to your Account
           </Text>
 
-          <View style={[styles.inputWrapper, styles.inputActive,{borderColor: emailColor}]}>
+          <View style={[styles.inputWrapper, styles.inputActive, { borderColor: emailColor }]}>
             <Ionicons
               name="mail"
               size={20}
@@ -66,7 +93,7 @@ export default function LoginScreen() {
               placeholder="Email"
               style={[styles.input]}
               placeholderTextColor={defaultTheme.greyColor}
-              onChangeText={setLogin}
+              onChangeText={setLoginHandler}
               onFocus={() => {
                 setEmailColor(defaultTheme.primaryColor);
                 setPasswordColor(defaultTheme.greyColor);
@@ -78,7 +105,7 @@ export default function LoginScreen() {
             />
           </View>
 
-          <View style={[styles.inputWrapper, styles.inputActive,{borderColor: passwordColor}]}>
+          <View style={[styles.inputWrapper, styles.inputActive, { borderColor: passwordColor }]}>
             <Ionicons
               name="lock-closed"
               size={20}
@@ -90,7 +117,7 @@ export default function LoginScreen() {
               secureTextEntry={!isPasswordVisible}
               style={styles.input}
               placeholderTextColor={defaultTheme.greyColor}
-              onChangeText={setPassword}
+              onChangeText={setPasswordHandler}
               onFocus={() => {
                 setPasswordColor(defaultTheme.primaryColor);
                 setEmailColor(defaultTheme.greyColor);
@@ -127,7 +154,9 @@ export default function LoginScreen() {
               <Text style={styles.rememberText}>Remember me</Text>
             </TouchableOpacity>
           </View> */}
-
+          {errorState && !errorState.valid && (
+            <Text style={styles.errorText}>{errorState.message}</Text>
+          )}
           <TouchableOpacity
             style={styles.signBtn}
             onPress={onSignInHandlerPress}
@@ -150,7 +179,7 @@ export default function LoginScreen() {
             style={styles.socialBtn}
             onPress={onGuestNavigateHandler}
           >
-            <Ionicons name="enter-outline" size={30} color="#1877F2" />
+            <Ionicons name="enter-outline" size={30} color={defaultTheme.faceBookColor} />
             <Text style={styles.socialBtnText}>Continue as Guest</Text>
           </TouchableOpacity>
 

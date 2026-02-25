@@ -2,6 +2,14 @@
 export const authKey = "auth";
 export const Authorised = "ENABLED";
 export const Guest = "GUEST";
+export const emailType = "email";
+export const passwordType = "password";
+export const nameType = "name";
+export const OK = { valid: true };
+export const NOK = { valid: false };
+
+//booking
+export const bookingKey = "booking";
 
 //booking tab kind
 export const Ongoing = "Ongoing";
