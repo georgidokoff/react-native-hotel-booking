@@ -5,7 +5,7 @@ export default function Header({
   title,
   styles = { container, image, text },
 }) {
-  console.log(styles)
+  
   return (
     <View style={styles.container}>
       <Image source={imageSource} style={styles.image} />

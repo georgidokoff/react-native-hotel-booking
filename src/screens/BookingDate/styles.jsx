@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
         marginLeft: 15
     },
     scrollContent: {
-        padding: 20
+        paddingHorizontal: 20
     },
 
     // Calendar Card
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
         backgroundColor: '#F8FEFA',
         borderRadius: 20,
         padding: 10,
-        marginBottom: 30
+        marginBottom: 10
     },
     calendarTheme: {
         todayTextColor: defaultTheme.primaryColor,
@@ -93,6 +93,11 @@ export const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderColor: '#EEEEEE',
         padding: 0,
+        bottom: '1%',
+        // width: '100%',
+        // position: 'absolute',
+        // backgroundColor: defaultTheme.white,
+        // paddingVertical: 20,
         marginHorizontal: 24,
         alignItems: 'center'
     },

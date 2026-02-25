@@ -45,7 +45,7 @@ export default function HomeScreen({ navigation }) {
         if (auth) {
             await getByUserId(auth.user.id, auth.accessToken)
                 .then((booking) => {
-                    setBookingsData(booking?.filter((b) => b?.state === Ongoing));
+                    setBookingsData(booking?.filter((b) => b?.state === Ongoing) || []);
                     setRefreshing(false);
                 })
                 .catch((err) => {
@@ -58,7 +58,7 @@ export default function HomeScreen({ navigation }) {
     const filteredBookings = useMemo(() => {
         const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;
 
-        return bookingsData
+        return bookingsData && bookingsData
             .filter((booked) => booked.id !== 0 &&
                 (
                     (seeAll || booked.created > threeDaysAgo) &&
@@ -172,7 +172,7 @@ export default function HomeScreen({ navigation }) {
                 showsHorizontalScrollIndicator={false}
                 style={styles.featuredScroll}
             >
-                {hotelsData
+                {hotelsData && hotelsData
                     .filter((h) => h.id !== 0)
                     .map((hotel) => (
                         <HotelCard
@@ -200,7 +200,7 @@ export default function HomeScreen({ navigation }) {
                         </TouchableOpacity>
                     </View>
 
-                    {filteredBookings.map((ongoing) => (
+                    {filteredBookings && filteredBookings.map((ongoing) => (
                         <HotelCard
                             key={ongoing.created}
                             name={ongoing.name}

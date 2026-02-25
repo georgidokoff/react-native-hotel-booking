@@ -89,7 +89,7 @@ export const styles = StyleSheet.create({
   // Footer
   footer: {
     position: "absolute",
-    bottom: 0,
+    bottom: '10%',
     width: "100%",
     padding: 20,
     backgroundColor: "#fff",

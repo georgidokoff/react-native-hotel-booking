@@ -39,7 +39,7 @@ export default function BookingDateScreen({ navigation, route }) {
             if (dateString < startDate) {
                 setStartDate(dateString);
                 setEndDate(null);
-            } else {
+            } else if (dateString > startDate) {
                 setEndDate(dateString);
             }
         }
