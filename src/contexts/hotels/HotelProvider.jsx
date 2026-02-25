@@ -2,41 +2,68 @@ import { createContext, useEffect, useState } from "react";
 import { getAll, getById } from "../../services/hotelService.js";
 
 export const HotelContext = createContext({
-  hotels: [],
-  getAllHandler() {},
-  getHotelById(hotelId) {},
+    isLoading: false,
+    hotels: [],
+    error: null,
+    getAllHandler() { },
+    getHotelById(hotelId) { },
+    clearError: () => { },
 });
 
 export function HotelProvider({ children }) {
-  const [hotels, setHotels] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [hotels, setHotels] = useState([]);
 
-  useEffect(() => {
-    getAllHandler();
-  }, []);
+    useEffect(() => {
+        getAllHandler();
+    }, []);
 
-  const getAllHandler = async () => {
-    try {
-      const result = await getAll();
-      setHotels(result);
-      return result;
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    const getAllHandler = async () => {
+        try {
+            setIsLoading(true);
 
-  const getHotelById = (hotelId) => {
-    return getById(hotelId);
-  };
+            const result = await getAll();
+            setHotels(result);
+            return result;
+        } catch (err) {
+            console.log(err);
+            setError("An error occurred while fetching hotels.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  const contextValue = {
-    hotels,
-    getAllHandler,
-    getHotelById,
-  };
+    const getHotelById = async (hotelId) => {
+        try {
+            setIsLoading(true);
+            const hotel = await getById(hotelId);
 
-  return (
-    <HotelContext.Provider value={contextValue}>
-      {children}
-    </HotelContext.Provider>
-  );
+            return hotel;
+            
+        } catch (error) {
+            console.error("Error fetching hotel by ID:", error);
+            setError("An error occurred while fetching hotel data.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const contextValue = {
+        isLoading,
+        error,
+        hotels,
+        getAllHandler,
+        getHotelById,
+        clearError: () => () => {
+            setError(null);
+            setIsLoading(false);
+        },
+    };
+
+    return (
+        <HotelContext.Provider value={contextValue}>
+            {children}
+        </HotelContext.Provider>
+    );
 }

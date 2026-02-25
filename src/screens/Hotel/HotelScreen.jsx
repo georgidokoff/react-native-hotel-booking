@@ -17,10 +17,7 @@ const DetailIcon = ({ name, label, color }) => (
 
 export default function HotelScreen({ navigation, route }) {
     const [hotel] = useState(route.params || {})
-    console.log(navigation);
     const bookNowHandler = async () => {
-        console.log('book now');
-
         navigation.navigate('BookingDate',{
             ...hotel
         });

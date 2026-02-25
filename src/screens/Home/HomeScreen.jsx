@@ -22,8 +22,11 @@ import { Tab } from "../../common/Tab";
 
 import { ImagesAssets } from "../../../assets/images";
 import { styles } from "./styles";
+import { TicketModal } from "../../components/TicketModal";
 
 export default function HomeScreen({ navigation }) {
+    const [visibleViewTicket, setVisibleViewTicket] = useState(false);
+    const [currentBooking, setCurrentBooking] = useState(null);
     const [seeAll, setSeeAll] = useState(false);
     const [activeTab, setActiveTab] = useState(Recommended);
     const [refreshing, setRefreshing] = useState(false);
@@ -128,6 +131,23 @@ export default function HomeScreen({ navigation }) {
         setActiveTab(tab);
     };
 
+    const recentBookingHandler = (ongoing) => {
+        setVisibleViewTicket(true);
+        setCurrentBooking({
+            ...ongoing,
+            qrCOdeValue: ongoing.name,
+            resourceTypeName: `${ongoing.name ?? ''}\n${ongoing.kind ?? ''}`,
+            occupancy: `${ongoing.guests ?? ''}`,
+            userFullname: `${auth?.user?.name ?? ''}`,
+            userPhone: `${auth?.user?.phone ?? ''}`,
+        });
+    }
+
+    const onCloseViewTicket = () => {
+        setVisibleViewTicket(false);
+        setCurrentBooking(null);
+    }
+
     return (
         <ScrollView
             style={{ paddingBottom: tabBarHeight }}
@@ -190,6 +210,15 @@ export default function HomeScreen({ navigation }) {
                     ))}
             </ScrollView>
 
+            {/* --- Ticket Modal --- */}
+            {visibleViewTicket && currentBooking && (
+                <TicketModal
+                    bookingItem={currentBooking}
+                    isVisible={visibleViewTicket}
+                    onCloseViewTicket={onCloseViewTicket}
+                />
+            )}
+
             {/* --- Recently Booked Section --- */}
             {(auth?.user?.status === Authorised && (
                 <ScrollView>
@@ -211,7 +240,7 @@ export default function HomeScreen({ navigation }) {
                             rating="4.8"
                             reviews={randomGenerateReviews()}
                             booked={ongoing.state === Ongoing}
-                            onPress={() => { alert('open hotel') }}
+                            onPress={() => { recentBookingHandler(ongoing) }}
                         />
                     ))}
                 </ScrollView>
