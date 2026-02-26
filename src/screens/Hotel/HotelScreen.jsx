@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { EUR, PerNightSearch } from '../../shared/constants';
+import { EUR, Guest, PerNightSearch } from '../../shared/constants';
 
 import { defaultTheme } from '../../helpers/styleHelper';
 import { styles } from './styles'
@@ -17,8 +17,11 @@ const DetailIcon = ({ name, label, color }) => (
 
 export default function HotelScreen({ navigation, route }) {
     const [hotel] = useState(route.params || {})
+    const [auth] = useState(route.params?.auth || null);
+    const [isGuest] = useState(!auth || route.params?.auth?.user?.status === Guest);
+
     const bookNowHandler = async () => {
-        navigation.navigate('BookingDate',{
+        navigation.navigate('BookingDate', {
             ...hotel
         });
     }
@@ -88,7 +91,10 @@ export default function HotelScreen({ navigation, route }) {
                     <Text style={styles.priceAmount}>{EUR}{' '}{hotel.price_per_night}</Text>
                     <Text style={styles.priceUnit}>{' '}{PerNightSearch}</Text>
                 </View>
-                <TouchableOpacity style={styles.bookBtn} onPress={bookNowHandler}>
+                <TouchableOpacity
+                disabled={isGuest}
+                style={[styles.bookBtn, isGuest && styles.disabledBookBtnText]}
+                onPress={bookNowHandler}>
                     <Text style={styles.bookBtnText}>Book Now!</Text>
                 </TouchableOpacity>
             </SafeAreaView>

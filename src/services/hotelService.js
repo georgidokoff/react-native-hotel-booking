@@ -1,7 +1,7 @@
 import { api } from "./api.js";
 
-export async function getAll() {
-    const result = await api.get('/hotels');
+export async function getAll(pageSize = 100, offset = 0) {
+    const result = await api.get(`/hotels?pageSize=${pageSize}&offset=${offset}`);
 
     return result.data;
 }

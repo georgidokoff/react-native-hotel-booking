@@ -27,8 +27,9 @@ export function HotelProvider({ children }) {
             setHotels(result);
             return result;
         } catch (err) {
-            console.log(err);
+            console.error("Error fetching hotels:", err);
             setError("An error occurred while fetching hotels.");
+            return { valid: false, message: "An error occurred while fetching hotels." };
         } finally {
             setIsLoading(false);
         }
@@ -44,6 +45,7 @@ export function HotelProvider({ children }) {
         } catch (error) {
             console.error("Error fetching hotel by ID:", error);
             setError("An error occurred while fetching hotel data.");
+            return { valid: false, message: "An error occurred while fetching hotel data." };
         } finally {
             setIsLoading(false);
         }
