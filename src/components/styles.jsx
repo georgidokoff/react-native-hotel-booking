@@ -288,4 +288,17 @@ export const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: "center",
   },
+  removeBtn: {
+    backgroundColor: "#fff",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+  },
+  removeIcon: {
+    color: "#F44336",
+    fontWeight: "bold",
+    textAlign: "right",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

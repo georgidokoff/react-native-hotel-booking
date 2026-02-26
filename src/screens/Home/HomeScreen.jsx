@@ -33,7 +33,7 @@ export default function HomeScreen({ navigation }) {
     const [searchInput, setSearchInput] = useState('');
     const { getByUserId } = useBooking();
     const { user } = useUser();
-    const { hotels } = useHotel();
+    const { hotels, getAllHandler } = useHotel();
     const [hotelsData, setHotelsData] = useState(hotels || []);
     const [auth, setAuth] = usePersistedState(authKey, {
         user: null,
@@ -52,7 +52,7 @@ export default function HomeScreen({ navigation }) {
                     setRefreshing(false);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error('Error fetching bookings:', err);
                     setRefreshing(false);
                 });
         }
@@ -85,6 +85,12 @@ export default function HomeScreen({ navigation }) {
         if (hotels?.length > 0) {
             setHotelsData(hotels);
         } else {
+            const result = await getAllHandler();
+
+            if (result?.valid !== false) {
+                setHotelsData(result);
+            }
+
             setRefreshing(false);
         }
 
@@ -123,7 +129,7 @@ export default function HomeScreen({ navigation }) {
 
     const loadHotelHandler = (hotel) => {
         navigation.navigate('Hotel', {
-            ...hotel
+            ...hotel, auth,
         });
     }
 
@@ -193,7 +199,8 @@ export default function HomeScreen({ navigation }) {
                 style={styles.featuredScroll}
             >
                 {hotelsData && hotelsData
-                    .filter((h) => h.id !== 0)
+                    .filter((h) => h.id !== 0 && (activeTab === Recommended || h.category === activeTab))
+                    .slice(0, 10)
                     .map((hotel) => (
                         <HotelCard
                             key={hotel.id}

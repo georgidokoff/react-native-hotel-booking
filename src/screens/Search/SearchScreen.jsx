@@ -27,11 +27,12 @@ export default function SearchScreen({ navigation }) {
     await getAllHandler()
       .then((hotels) => {
         setHotelsData(hotels);
-
-        setRefreshing(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.error('Error fetching hotels:', err);
+      })
+      .finally(() => {
+        setRefreshing(false);
       });
   }, []);
 
