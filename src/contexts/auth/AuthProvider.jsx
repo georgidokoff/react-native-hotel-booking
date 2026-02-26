@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback } from "react";
+import { createContext, useState, useCallback, useEffect } from "react";
 
 import { callLogin, callRegister, callLoginGuest, callLogout, callRefreshToken } from "../../services/authService.js";
 import { usePersistedState } from "../../hooks/usePersistedState.js";
@@ -24,6 +24,19 @@ export function AuthProvider({ children }) {
         accessToken: null,
         user: null,
     });
+
+    useEffect(() => {
+        if (!auth?.accessToken) {
+            setIsLoading(true);
+        } else {
+            setIsLoading(false);
+        }
+
+        // ensure loading state is set to false after period of time
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+    }, [auth?.accessToken === null]);
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -136,12 +149,18 @@ export function AuthProvider({ children }) {
         refreshToken: refreshTokenHandler,
         logout: async () => {
             await callLogout(auth?.accessToken)
-                .catch((err) => console.log(err))
+                .catch((err) => {
+                    setIsLoading(false);
+                    console.error('Error during logout:', err);
+                    setError('An error occurred during logout');
+                    return { valid: false, message: 'An error occurred during logout' };
+                })
                 .finally(() => {
                     setAuth({
                         accessToken: null,
                         user: null,
                     })
+                    setIsLoading(false);
                 });
         },
     };

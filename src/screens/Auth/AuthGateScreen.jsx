@@ -4,168 +4,168 @@ import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAuth } from "../../contexts/auth/useAuth.js";
+import { emailType, passwordType, authKey } from "../../shared/constants.js";
 import { validate } from "../../helpers/validatorsHelper.js";
 
 import { styles } from "./styles";
 import { defaultTheme } from "../../helpers/styleHelper.js";
-import { emailType, passwordType } from "../../shared/constants.js";
 
 export default function AuthGateScreen({ navigation }) {
-  const { login, register, loginGuest, isLoading, error, clearError } = useAuth();
+    const { login, register, loginGuest, isLoading, error, clearError } = useAuth();  
 
-  const signInHandler = async (email, password) => {
-    clearError();
+    const signInHandler = async (email, password) => {
+        clearError();
+
+        // validation can be added here
+        const emailValidation = validate(email, emailType);
+
+        if (!emailValidation?.valid) {
+            // handle invalid email
+            return emailValidation;
+        }
+
+        const passwordValidation = validate(password, passwordType);
+
+        if (!passwordValidation?.valid) {
+            // handle invalid password
+            return passwordValidation;
+        }
+
+        if (error) {
+            return { valid: false, message: error };
+        }
+
+        return await login(email, password);
+    };
     
-    // validation can be added here
-    const emailValidation = validate(email, emailType);
+    const signUpHandler = async (email, password) => {
+        clearError();
 
-    if (!emailValidation?.valid) {
-      // handle invalid email
-      return emailValidation;
-    }
+        // validation can be added here
+        const emailValidation = validate(email, emailType);
 
-    const passwordValidation = validate(password, passwordType);
+        if (!emailValidation?.valid) {
+            // handle invalid email
+            return emailValidation;
+        }
 
-    if (!passwordValidation?.valid) {
-      // handle invalid password
-      return passwordValidation;
-    }
+        const passwordValidation = validate(password, passwordType);
+        if (!passwordValidation?.valid) {
+            // handle invalid password
+            return passwordValidation;
+        }
 
-    if (error) {
-      return { valid: false, message: error };
-    }
+        if (error) {
+            return { valid: false, message: error };
+        }
 
-    return await login(email, password);
-  };
+        return await register(email, password, null);
+    };
 
-  const signUpHandler = async (email, password) => {
-    clearError();
-    
-    // validation can be added here
-    const emailValidation = validate(email, emailType);
+    const guestHandler = async () => {
+        clearError();
 
-    if (!emailValidation?.valid) {
-      // handle invalid email
-      return emailValidation;
-    }
+        return await loginGuest();
+    };
 
-    const passwordValidation = validate(password, passwordType);
-    if (!passwordValidation?.valid) {
-      // handle invalid password
-      return passwordValidation;
-    }
+    const signUpNavigateHandler = () => {
+        navigation.goBack();
 
-    if (error) {
-      return { valid: false, message: error };
-    }
+        onSignUpHandler();
+    };
 
-    return await register(email, password, null);
-  };
+    const onSignUpHandler = () => {
+        navigation.navigate("Register", {
+            onSignInNavigate: signInNavigateHandler,
+            onSignUp: signUpHandler,
+            onGuestNavigate: guestNavigateHandler,
+        });
+    };
 
-  const guestHandler = async () => {
-    clearError();
+    const signInNavigateHandler = () => {
+        navigation.goBack();
 
-    return await loginGuest();
-  };
+        onSignInHandler();
+    };
 
-  const signUpNavigateHandler = () => {
-    navigation.goBack();
+    const onSignInHandler = () => {
+        navigation.navigate("Login", {
+            onSignIn: signInHandler,
+            onSignUpNavigate: signUpNavigateHandler,
+            onGuestNavigate: guestNavigateHandler,
+        });
+    };
 
-    onSignUpHandler();
-  };
+    const guestNavigateHandler = () => {
+        navigation.goBack();
 
-  const onSignUpHandler = () => {
-    navigation.navigate("Register", {
-      onSignInNavigate: signInNavigateHandler,
-      onSignUp: signUpHandler,
-      onGuestNavigate: guestNavigateHandler,
-    });
-  };
-
-  const signInNavigateHandler = () => {
-    navigation.goBack();
-
-    onSignInHandler();
-  };
-  
-  const onSignInHandler = () => {
-    navigation.navigate("Login", {
-      onSignIn: signInHandler,
-      onSignUpNavigate: signUpNavigateHandler,
-      onGuestNavigate: guestNavigateHandler,
-    });
-  };
-
-  const guestNavigateHandler = () => {
-    navigation.goBack();
-
-    guestHandler();
-  };
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
-      const { action } = e;
-      if (action.payload?.params?.action === "guest") {
-        e.preventDefault();
         guestHandler();
-      } else if (action.payload?.params?.action === "signUp") {
-        e.preventDefault();
-        signUpHandler();
-      } else if (action.payload?.params?.action === "signIn") {
-        e.preventDefault();
-        signInHandler();
-      } else if (action.payload?.params?.action === "onSignUpNavigate") {
-        e.preventDefault();
-        signUpNavigateHandler();
-      } else if (action.payload?.params?.action === "onSignInNavigate") {
-        e.preventDefault();
-        signInNavigateHandler();
-      } else if (action.payload?.params?.action === "onGuestNavigate") {
-        e.preventDefault();
-        guestNavigateHandler();
-      }
-    });
+    };
 
-    return unsubscribe;
-  }, [
-    navigation,
-    guestHandler,
-    signUpHandler,
-    signInHandler,
-    signUpNavigateHandler,
-    signInNavigateHandler,
-    guestNavigateHandler,
-  ]);
+    useEffect(() => {
+        const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+            const { action } = e;
+            if (action.payload?.params?.action === "guest") {
+                e.preventDefault();
+                guestHandler();
+            } else if (action.payload?.params?.action === "signUp") {
+                e.preventDefault();
+                signUpHandler();
+            } else if (action.payload?.params?.action === "signIn") {
+                e.preventDefault();
+                signInHandler();
+            } else if (action.payload?.params?.action === "onSignUpNavigate") {
+                e.preventDefault();
+                signUpNavigateHandler();
+            } else if (action.payload?.params?.action === "onSignInNavigate") {
+                e.preventDefault();
+                signInNavigateHandler();
+            } else if (action.payload?.params?.action === "onGuestNavigate") {
+                e.preventDefault();
+                guestNavigateHandler();
+            }
+        });
 
-  return (
-    <SafeAreaView style={styles.container}>
-      {isLoading && (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size='large' color={defaultTheme.primaryColor} />
-        </View>
-      )}
-      <View style={styles.centerContent}>
-        <Text style={styles.headerText}>Let's you in</Text>
+        return unsubscribe;
+    }, [
+        navigation,
+        guestHandler,
+        signUpHandler,
+        signInHandler,
+        signUpNavigateHandler,
+        signInNavigateHandler,
+        guestNavigateHandler,
+    ]);
+    
+    return (
+        <SafeAreaView style={styles.container}>
+            {isLoading ? (
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size='large' color={defaultTheme.primaryColor} />
+                </View>
+            ) :
+                <View style={styles.centerContent}>
+                    <Text style={styles.headerText}>Let's you in</Text>
 
-        <TouchableOpacity style={styles.socialBtn} onPress={guestHandler}>
-          <Ionicons name="enter-outline" size={30} color={defaultTheme.faceBookColor} />
-          <Text style={styles.socialBtnText}>Continue as Guest</Text>
-        </TouchableOpacity>
+                    <TouchableOpacity style={styles.socialBtn} onPress={guestHandler}>
+                        <Ionicons name="enter-outline" size={30} color={defaultTheme.faceBookColor} />
+                        <Text style={styles.socialBtnText}>Continue as Guest</Text>
+                    </TouchableOpacity>
 
-        <View style={styles.dividerRow}>
-          <View style={styles.line} />
-          <Text style={styles.orText}>or</Text>
-          <View style={styles.line} />
-        </View>
+                    <View style={styles.dividerRow}>
+                        <View style={styles.line} />
+                        <Text style={styles.orText}>or</Text>
+                        <View style={styles.line} />
+                    </View>
 
-        <TouchableOpacity style={styles.primaryBtn} onPress={onSignInHandler}>
-          <Text style={styles.primaryBtnText}>Sign in with password</Text>
-        </TouchableOpacity>
+                    <TouchableOpacity style={styles.primaryBtn} onPress={onSignInHandler}>
+                        <Text style={styles.primaryBtnText}>Sign in with password</Text>
+                    </TouchableOpacity>
 
-        <Text style={styles.footerLink} onPress={onSignUpHandler}>
-          Don't have an account? <Text style={styles.greenText}>Sign up</Text>
-        </Text>
-      </View>
-    </SafeAreaView>
-  );
+                    <Text style={styles.footerLink} onPress={onSignUpHandler}>
+                        Don't have an account? <Text style={styles.greenText}>Sign up</Text>
+                    </Text>
+                </View>}
+        </SafeAreaView>
+    );
 }
