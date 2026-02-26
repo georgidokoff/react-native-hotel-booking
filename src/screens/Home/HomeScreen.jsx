@@ -50,7 +50,6 @@ export default function HomeScreen({ navigation }) {
         if (!!auth) {
             await getByUserId(auth.user.id, auth.accessToken)
                 .then((bookings) => {
-                    console.log('Fetched bookings:', bookings);
                     setBookingsData(!!bookings ? bookings.filter((b) => b?.state === Ongoing) : []);
 
                     setRefreshing(false);

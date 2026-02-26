@@ -6,7 +6,8 @@ import Search from "../../components/Search";
 import HotelCard from "../../components/HotelCard";
 
 import { randomGenerateReviews, getSearchFieldByName } from "../../helpers/commonHelper";
-import { PerNightSearch } from "../../shared/constants";
+import { authKey, PerNightSearch } from "../../shared/constants";
+import { usePersistedState } from "../../hooks/usePersistedState";
 import { useHotel } from "../../contexts/hotels/useHotel";
 
 import { styles } from "./styles";
@@ -18,6 +19,10 @@ export default function SearchScreen({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [hotelsData, setHotelsData] = useState([]);
   const [searchInput, setSearchInput] = useState('');
+  const [auth, setAuth] = usePersistedState(authKey, {
+    user: null,
+    accessToken: null,
+  });
 
   const { hotels, getAllHandler } = useHotel();
 
@@ -55,7 +60,7 @@ export default function SearchScreen({ navigation }) {
 
   const loadHotelHandler = (hotel) => {
     navigation.navigate('Hotel', {
-      ...hotel
+      ...hotel, auth,
     });
   }
 
