@@ -16,7 +16,9 @@ export function HotelProvider({ children }) {
     const [hotels, setHotels] = useState([]);
 
     useEffect(() => {
-        getAllHandler();
+        (async () => {
+            await getAllHandler();
+        })();
     }, []);
 
     const getAllHandler = async () => {

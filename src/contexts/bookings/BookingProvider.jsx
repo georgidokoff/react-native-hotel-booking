@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useContext } from "react";
 import {
     getByUserId,
     create,
@@ -6,6 +6,8 @@ import {
     deleteById,
 } from "../../services/bookingService.js";
 import { useAuth } from "../auth/useAuth.js";
+import { usePersistedState } from "../../hooks/usePersistedState.js";
+import { authKey } from "../../shared/constants.js";
 
 export const BookingContext = createContext({
     isLoading: false,
@@ -22,42 +24,41 @@ export function BookingProvider({ children }) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [bookings, setBookings] = useState([]);
-    const { refreshToken } = useAuth();
+    const[auth, setAuth] = usePersistedState(authKey, {
+        accessToken: null,
+        user: null,
+    });
+    const { logout } = useAuth();
 
     const getByUserIdHandler = async (userId, accessToken) => {
         try {
             setIsLoading(true);
+            setError(null);
 
             const bookingsData = await getByUserId(userId, accessToken);
 
-            setBookings(bookingsData);
+            setBookings(bookingsData || []);
 
-            return bookingsData
+            return bookingsData || []
         } catch (err) {
-            setError("An error occurred while fetching bookings.");
-            // Check if token expired
-            if (err.tokenExpired && refreshToken) {
-                const newToken = await refreshToken();
-
-                if (newToken) {
-                    setError(null);
-                    // Retry with new token
-                    try {
-                        const bookingsData = await getByUserId(userId, newToken);
-                        setBookings(bookingsData);
-                        return bookingsData;
-                    } catch (retryErr) {
-                        console.error("Error fetching bookings after token refresh:", retryErr);
-                        setError("An error occurred while fetching bookings after token refresh.");
-                        return { valid: false, message: "An error occurred while fetching bookings after token refresh." };
-                    }
-                }
-            } else {
-                console.error("Error fetching bookings by user ID:", err);
-                setError("An error occurred while fetching bookings.");
-                return { valid: false, message: "An error occurred while fetching bookings." };
+            // Handle auth errors (401, token invalid)
+            if (err.isAuthError) {
+                setError("Your session has expired. Please login again.");
+                clearError();
+                // setBookings([]);
+                setAuth({
+                    accessToken: null,
+                    user: null,
+                });
+                logout();
+                console.log("Auth error detected, user will be logged out by API interceptor.");
+                return [];
             }
-            return "An error accured while fetching bookings.";
+            
+            setError("An error occurred while fetching bookings.");
+            setBookings([]);
+            console.error("Error fetching bookings:", err);
+            return [];
         }
         finally {
             setIsLoading(false);
@@ -67,33 +68,31 @@ export function BookingProvider({ children }) {
     const createHandler = async (bookingData, accessToken) => {
         try {
             setIsLoading(true);
+            setError(null);
             const newbooking = await create(bookingData, accessToken);
 
             setBookings((prevbookings) => [...prevbookings, newbooking]);
 
             return newbooking;
         } catch (err) {
-            setError("An error occurred while creating the booking.");
-            if (err.tokenExpired && refreshToken) {
-                const newToken = await refreshToken();
-
-                if (newToken) {
-                    setError(null);
-                    try {
-                        const newbooking = await create(bookingData, newToken);
-                        setBookings((prevbookings) => [...prevbookings, newbooking]);
-                        return newbooking;
-                    } catch (retryErr) {
-                        console.error("Error creating booking after token refresh:", retryErr);
-                        setError("An error occurred while creating the booking after token refresh.");
-                        return { valid: false, message: "An error occurred while creating the booking after token refresh." };
-                    }
-                }
-            } else {
-                console.error("Error creating booking:", err);
-                setError("An error occurred while creating the booking.");
-                return { valid: false, message: "An error occurred while creating the booking." };
+            if (err.isAuthError) {
+                clearError();
+                // setBookings([]);
+                setAuth({
+                    accessToken: null,
+                    user: null,
+                });
+                logout();
+                setError("Your session has expired. Please login again.");
+                console.log("Auth error detected, user will be logged out by API interceptor.");
+                clearError();
+                setauth
+                return {};
             }
+            
+            setError("An error occurred while creating the booking.");
+            console.error("Error creating booking:", err);
+            return null;
         }
         finally {
             setIsLoading(false);
@@ -103,6 +102,7 @@ export function BookingProvider({ children }) {
     const updateHandler = async (bookingData, accessToken) => {
         try {
             setIsLoading(true);
+            setError(null);
             const updatedbooking = await update(bookingData, accessToken);
 
             setBookings((prevbookings) =>
@@ -113,31 +113,22 @@ export function BookingProvider({ children }) {
 
             return updatedbooking;
         } catch (err) {
-            setError("An error occurred while updating the booking.");
-            if (err.tokenExpired && refreshToken) {
-                const newToken = await refreshToken();
-
-                if (newToken) {
-                    setError(null);
-                    try {
-                        const updatedbooking = await update(bookingData, newToken);
-                        setBookings((prevbookings) =>
-                            prevbookings.map((booking) =>
-                                booking.id === updatedbooking.id ? updatedbooking : booking,
-                            ),
-                        );
-                        return updatedbooking;
-                    } catch (retryErr) {
-                        setError("An error occurred while updating the booking after token refresh.");
-                        console.error("Error updating booking after token refresh:", retryErr);
-                        return { valid: false, message: "An error occurred while updating the booking after token refresh." };
-                    }
-                }
-            } else {
-                console.error("Error updating booking:", err);
-                setError("An error occurred while updating the booking.");
-                return { valid: false, message: "An error occurred while updating the booking." };
+            if (err.isAuthError) {
+                clearError();
+                // setBookings([]);
+                setAuth({
+                    accessToken: null,
+                    user: null,
+                });
+                logout();
+                setError("Your session has expired. Please login again.");
+                console.log("Auth error detected, user will be logged out by API interceptor.");
+                return {};
             }
+            
+            setError("An error occurred while updating the booking.");
+            console.error("Error updating booking:", err);
+            return null;
         }
         finally {
             setIsLoading(false);
@@ -147,33 +138,29 @@ export function BookingProvider({ children }) {
     const removeHandler = async (bookingId, accessToken) => {
         try {
             setIsLoading(true);
+            setError(null);
             await deleteById(bookingId, accessToken);
             setBookings((prevbookings) =>
                 prevbookings.filter((booking) => (booking.objectId ?? booking.id) !== bookingId),
             );
+            return true;
         } catch (err) {
-            setError("An error occurred while removing the booking.");
-            if (err.tokenExpired && refreshToken) {
-                const newToken = await refreshToken();
-
-                if (newToken) {
-                    setError(null);
-                    try {
-                        await deleteById(bookingId, newToken);
-                        setBookings((prevbookings) =>
-                            prevbookings.filter((booking) => (booking.objectId ?? booking.id) !== bookingId),
-                        );
-                    } catch (retryErr) {
-                        setError("An error occurred while removing the booking after token refresh.");
-                        console.error("Error removing booking after token refresh:", retryErr);
-                        return { valid: false, message: "An error occurred while removing the booking after token refresh." };
-                    }
-                }
-            } else {
-                console.error("Error removing booking:", err);
-                setError("An error occurred while removing the booking.");
-                return { valid: false, message: "An error occurred while removing the booking." };
+            if (err.isAuthError) {
+                clearError();
+                // setBookings([]);
+                setAuth({
+                    accessToken: null,
+                    user: null,
+                });
+                logout();
+                setError("Your session has expired. Please login again.");
+                console.log("Auth error detected, user will be logged out by API interceptor.");
+                return false;
             }
+            
+            setError("An error occurred while removing the booking.");
+            console.error("Error removing booking:", err);
+            return false;
         }
         finally {
             setIsLoading(false);

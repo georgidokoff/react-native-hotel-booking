@@ -1,6 +1,7 @@
 import { createContext, useState, useCallback, useEffect } from "react";
 
-import { callLogin, callRegister, callLoginGuest, callLogout, callRefreshToken } from "../../services/authService.js";
+import { callLogin, callRegister, callLoginGuest, callLogout } from "../../services/authService.js";
+import { setLogoutCallback } from "../../services/api.js";
 import { usePersistedState } from "../../hooks/usePersistedState.js";
 import { authKey } from "../../shared/constants.js";
 
@@ -15,7 +16,6 @@ export const AuthContext = createContext({
     register: async (email, password, name) => { },
     loginGuest: async () => { },
     logout: async () => { },
-    refreshToken: async () => { },
     clearError: () => { },
 });
 
@@ -41,11 +41,27 @@ export function AuthProvider({ children }) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // Register logout callback for API interceptor
+    useEffect(() => {
+        setLogoutCallback(() => {
+            // Clear auth on 401 error
+            setAuth({
+                accessToken: null,
+                user: null,
+            });
+            setError('Your session has expired. Please login again.');
+            setTimeout(() => {
+                setError(null);
+                logout();
+            }, 1000);
+        });
+    }, [setAuth]);
+
     const login = async (login, password) => {
         try {
             setIsLoading(true);
             const response = await callLogin(login, password);
-            
+
             let user = {
                 id: response?.objectId,
                 email: response?.email,
@@ -54,9 +70,9 @@ export function AuthProvider({ children }) {
                 locale: response?.blUserLocale,
                 status: response?.userStatus,
             }
-            
+
             const accessToken = response['user-token'];
-            
+
             setAuth({ user, accessToken });
         } catch (err) {
             // console.log('login error', err, JSON.stringify(err), err.stack);
@@ -108,32 +124,22 @@ export function AuthProvider({ children }) {
         }
     }
 
-    const refreshTokenHandler = useCallback(async () => {
-        try {
-            if (!auth?.accessToken) {
-                throw new Error('No access token available');
-            }
-
-            const response = await callRefreshToken(auth.accessToken);
-            const newAccessToken = response['user-token'];
-
-            setAuth((prevAuth) => ({
-                ...prevAuth,
-                accessToken: newAccessToken,
-            }));
-
-            return newAccessToken;
-        } catch (err) {
-            console.error('Token refresh failed:', err);
-            // Force logout if refresh fails
-            setAuth({
-                accessToken: null,
-                user: null,
+    const logout = async () => {
+        await callLogout(auth?.accessToken)
+            .catch((err) => {
+                setIsLoading(false);
+                console.error('Error during logout:', err);
+                setError('An error occurred during logout');
+                return { valid: false, message: 'An error occurred during logout' };
+            })
+            .finally(() => {
+                setAuth({
+                    accessToken: null,
+                    user: null,
+                })
+                setIsLoading(false);
             });
-            setError('Session expired. Please login again.');
-            return { valid: false, message: 'Session expired. Please login again.' };
-        }
-    }, [auth?.accessToken, setAuth]);
+    };
 
     const contextValue = {
         isAuthenticated: !!auth.user && !!auth.accessToken && auth.user?.status === 'ENABLED',
@@ -146,23 +152,7 @@ export function AuthProvider({ children }) {
         login,
         register,
         loginGuest,
-        refreshToken: refreshTokenHandler,
-        logout: async () => {
-            await callLogout(auth?.accessToken)
-                .catch((err) => {
-                    setIsLoading(false);
-                    console.error('Error during logout:', err);
-                    setError('An error occurred during logout');
-                    return { valid: false, message: 'An error occurred during logout' };
-                })
-                .finally(() => {
-                    setAuth({
-                        accessToken: null,
-                        user: null,
-                    })
-                    setIsLoading(false);
-                });
-        },
+        logout,
     };
 
     return (

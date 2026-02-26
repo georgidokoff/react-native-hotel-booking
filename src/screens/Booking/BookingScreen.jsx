@@ -61,7 +61,7 @@ export default function BookingScreen({ navigation, route }) {
   const tabPressHandler = (tab) => {
     setActiveTab(tab);
   };
-  
+
   const cancelBookingCardHandler = async (id) => {
     let canceledBooking = bookingsData.find((od) => od.objectId === id);
     canceledBooking.state = Canceled;
@@ -69,18 +69,20 @@ export default function BookingScreen({ navigation, route }) {
 
     await update(canceledBooking, auth.accessToken);
 
-    setBookingsData([
-      ...bookingsData.filter((od) => od.objectId !== canceledBooking.objectId),
-      canceledBooking,
-    ]);
+    if (!!bookingsData) {
+      setBookingsData([
+        ...bookingsData?.filter((od) => od.objectId !== canceledBooking.objectId),
+        canceledBooking,
+      ]);
+    }
   };
 
   const onRemoveBookingCardHandler = async (id) => {
     try {
       await remove(id, auth.accessToken);
 
-      setBookingsData(bookingsData.filter((od) => (od.objectId ?? od.id) !== id));
-      
+      setBookingsData(!!bookingsData ? bookingsData.filter((od) => (od.objectId ?? od.id) !== id) : []);
+
     } catch (err) {
       console.error("Error removing booking:", err);
       setErrorState({ valid: false, message: "Error removing booking." });

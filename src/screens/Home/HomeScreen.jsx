@@ -33,7 +33,7 @@ export default function HomeScreen({ navigation }) {
     const [searchInput, setSearchInput] = useState('');
     const { getByUserId } = useBooking();
     const { user } = useUser();
-    const { hotels, getAllHandler } = useHotel();
+    const { hotels, getAllHandler, clearError } = useHotel();
     const [hotelsData, setHotelsData] = useState(hotels || []);
     const [auth, setAuth] = usePersistedState(authKey, {
         user: null,
@@ -45,10 +45,14 @@ export default function HomeScreen({ navigation }) {
     const tabBarHeight = useBottomTabBarHeight();
 
     const fetchingBookings = useCallback(async () => {
-        if (auth) {
+        clearError();
+        console.log('Fetching bookings for user ID:', auth?.accessToken);
+        if (!!auth) {
             await getByUserId(auth.user.id, auth.accessToken)
-                .then((booking) => {
-                    setBookingsData(booking?.filter((b) => b?.state === Ongoing) || []);
+                .then((bookings) => {
+                    console.log('Fetched bookings:', bookings);
+                    setBookingsData(!!bookings ? bookings.filter((b) => b?.state === Ongoing) : []);
+
                     setRefreshing(false);
                 })
                 .catch((err) => {

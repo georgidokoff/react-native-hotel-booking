@@ -37,7 +37,7 @@ export default function SearchScreen({ navigation }) {
   }, []);
 
   const hotelSearchDataHandler = () => {
-    return hotelsData &&
+    return !!hotelsData &&
       hotelsData
         .filter((hotel) => hotel.id !== 0 &&
           (

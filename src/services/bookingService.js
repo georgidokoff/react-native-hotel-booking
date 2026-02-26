@@ -8,6 +8,7 @@ export async function getByUserId(userId, accessToken, pageSize = null, offset =
         return result.data;
     } catch (error) {
         console.error("Error fetching bookings by user ID:", error.response ? error.response.data : error.message);
+        throw error;
         //throw new Error("Failed to fetch bookings. Please check your permissions.");
     }
 }
@@ -20,6 +21,7 @@ export async function create(bookingData, accessToken) {
         return result.data;
     } catch (error) {
         console.error("Error creating booking:", error.response ? error.response.data : error.message);
+        throw error;
         //throw new Error("Failed to create booking. Please check your permissions.");
     }
 }

@@ -1,4 +1,4 @@
-import { authApi } from "./api.js";
+import { authApi, api } from "./api.js";
 
 export async function callLogin(login, password) {
     try {
@@ -39,18 +39,6 @@ export async function callLogout(accessToken) {
         authApi.defaults.headers.common['user-token'] = accessToken;
 
         const result = await authApi.get(`/logout`);
-
-        return result.data;
-    } catch (err) {
-        throw err;
-    }
-}
-
-export async function callRefreshToken(accessToken) {
-    try {
-        authApi.defaults.headers.common['user-token'] = accessToken;
-
-        const result = await authApi.get(`/refresh-token`);
 
         return result.data;
     } catch (err) {
