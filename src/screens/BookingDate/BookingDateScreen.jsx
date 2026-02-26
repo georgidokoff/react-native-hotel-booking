@@ -104,7 +104,7 @@ export default function BookingDateScreen({ navigation, route }) {
                 .then((newBooking) => {
                     setIsSuccess(true);
                 })
-                .catch((err) => console.log(err))
+                .catch((err) => console.error('Error during booking payment:', err))
         }
     }
     const onViewTicketHandler = () => {

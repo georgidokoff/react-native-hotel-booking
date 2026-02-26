@@ -34,6 +34,8 @@ export async function update(bookingData, accessToken) {
 
 export async function deleteById(bookingId, accessToken) {
     api.defaults.headers.common['user-token'] = accessToken;
-
-    await api.delete(`/bookings/${bookingId}`);
+    
+    const result = await api.delete(`/bookings/${bookingId}`);
+    
+    return result.data;
 }

@@ -149,7 +149,7 @@ export function BookingProvider({ children }) {
             setIsLoading(true);
             await deleteById(bookingId, accessToken);
             setBookings((prevbookings) =>
-                prevbookings.filter((booking) => booking.id !== bookingId),
+                prevbookings.filter((booking) => (booking.objectId ?? booking.id) !== bookingId),
             );
         } catch (err) {
             setError("An error occurred while removing the booking.");
@@ -161,7 +161,7 @@ export function BookingProvider({ children }) {
                     try {
                         await deleteById(bookingId, newToken);
                         setBookings((prevbookings) =>
-                            prevbookings.filter((booking) => booking.id !== bookingId),
+                            prevbookings.filter((booking) => (booking.objectId ?? booking.id) !== bookingId),
                         );
                     } catch (retryErr) {
                         setError("An error occurred while removing the booking after token refresh.");

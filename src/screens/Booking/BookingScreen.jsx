@@ -22,7 +22,7 @@ export default function BookingScreen({ navigation, route }) {
   const [errorState, setErrorState] = useState({ valid: true, message: "" });
   const [refreshing, setRefreshing] = useState(false);
   const [auth] = usePersistedState(authKey, null);
-  const { getByUserId, update, isLoading, error, clearError } = useBooking();
+  const { getByUserId, update, remove, isLoading, error, clearError } = useBooking();
   const { hotels } = useHotel();
 
   const [activeTab, setActiveTab] = useState(Ongoing);
@@ -46,7 +46,7 @@ export default function BookingScreen({ navigation, route }) {
     setErrorState({ valid: !error, message: error });
   }, [route.params, error]);
 
-  useMemo(() => {
+  useEffect(() => {
     fetchBookings();
   }, [auth]);
 
@@ -63,18 +63,29 @@ export default function BookingScreen({ navigation, route }) {
   };
   
   const cancelBookingCardHandler = async (id) => {
-    let canceledBooking = bookingsData.find((od) => od.id === id);
+    let canceledBooking = bookingsData.find((od) => od.objectId === id);
     canceledBooking.state = Canceled;
     canceledBooking.tag = CanceledNRefunded;
 
     await update(canceledBooking, auth.accessToken);
 
     setBookingsData([
-      ...bookingsData.filter((od) => od.id !== canceledBooking.id),
+      ...bookingsData.filter((od) => od.objectId !== canceledBooking.objectId),
       canceledBooking,
     ]);
   };
 
+  const onRemoveBookingCardHandler = async (id) => {
+    try {
+      await remove(id, auth.accessToken);
+
+      setBookingsData(bookingsData.filter((od) => (od.objectId ?? od.id) !== id));
+      
+    } catch (err) {
+      console.error("Error removing booking:", err);
+      setErrorState({ valid: false, message: "Error removing booking." });
+    }
+  }
   return (
     <View style={styles.container}>
 
@@ -125,6 +136,7 @@ export default function BookingScreen({ navigation, route }) {
             }}
             status={activeTab}
             onCancelBookingCard={cancelBookingCardHandler}
+            onRemoveBookingCard={onRemoveBookingCardHandler}
           />
         )}
         contentContainerStyle={{ padding: 20 }}
