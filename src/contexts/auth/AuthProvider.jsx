@@ -141,6 +141,11 @@ export function AuthProvider({ children }) {
             });
     };
 
+    const clearError = () => () => {
+        setError(null);
+        setIsLoading(false);
+    };
+
     const contextValue = {
         isAuthenticated: !!auth.user && !!auth.accessToken && auth.user?.status === 'ENABLED',
         isGuest: !!auth.user && !!auth.accessToken && auth.user?.status === 'GUEST',
@@ -148,7 +153,7 @@ export function AuthProvider({ children }) {
         error,
         user: auth.user,
         auth,
-        clearError: () => setError(null),
+        clearError,
         login,
         register,
         loginGuest,
