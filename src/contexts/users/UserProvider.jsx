@@ -61,6 +61,11 @@ export function UserProvider({ children }) {
         }
     };
 
+    const clearError = () => () => {
+        setError(null);
+        setIsLoading(false);
+    };
+
     const contextValue = {
         isLoading,
         user,
@@ -68,10 +73,7 @@ export function UserProvider({ children }) {
         getById: getByIdHandler,
         updateUser: updateUserHandler,
         deleteUserById: deleteUserByIdHandler,
-        clearError: () => {
-            setError(null);
-            setIsLoading(false);
-        }
+        clearError
     };
 
     return (
