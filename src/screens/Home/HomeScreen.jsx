@@ -9,7 +9,7 @@ import {
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-import { categories, getSearchFieldByName, randomGenerateReviews, setDefaultRefresh } from "../../helpers/commonHelper";
+import { categories, getSearchFieldByName, randomGenerateDigits, setDefaultRefresh } from "../../helpers/commonHelper";
 import { authKey, Ongoing, Recommended, Authorised, PerNight } from "../../shared/constants";
 import { usePersistedState } from "../../hooks/usePersistedState";
 import { useBooking } from "../../contexts/bookings/useBooking";
@@ -46,7 +46,7 @@ export default function HomeScreen({ navigation }) {
 
     const fetchingBookings = useCallback(async () => {
         clearError();
-        console.log('Fetching bookings for user ID:', auth?.accessToken);
+        
         if (!!auth) {
             await getByUserId(auth.user.id, auth.accessToken)
                 .then((bookings) => {
@@ -248,7 +248,7 @@ export default function HomeScreen({ navigation }) {
                             country={ongoing.country}
                             price={ongoing.price}
                             rating="4.8"
-                            reviews={randomGenerateReviews()}
+                            reviews={randomGenerateDigits()}
                             booked={ongoing.state === Ongoing}
                             onPress={() => { recentBookingHandler(ongoing) }}
                         />

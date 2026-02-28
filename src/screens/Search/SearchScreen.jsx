@@ -5,7 +5,7 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Search from "../../components/Search";
 import HotelCard from "../../components/HotelCard";
 
-import { randomGenerateReviews, getSearchFieldByName } from "../../helpers/commonHelper";
+import { randomGenerateDigits, getSearchFieldByName } from "../../helpers/commonHelper";
 import { authKey, PerNightSearch } from "../../shared/constants";
 import { usePersistedState } from "../../hooks/usePersistedState";
 import { useHotel } from "../../contexts/hotels/useHotel";
@@ -85,7 +85,7 @@ export default function SearchScreen({ navigation }) {
               country={item.country_code}
               price={item.price_per_night}
               rating={item.ratings}
-              reviews={randomGenerateReviews()}
+              reviews={randomGenerateDigits()}
               booked={false}
               kind={PerNightSearch}
               onPress={() => loadHotelHandler(item)}
