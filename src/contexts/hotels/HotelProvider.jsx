@@ -53,16 +53,18 @@ export function HotelProvider({ children }) {
         }
     };
 
+    const clearError = () => () => {
+        setError(null);
+        setIsLoading(false);
+    };
+
     const contextValue = {
         isLoading,
         error,
         hotels,
         getAllHandler,
         getHotelById,
-        clearError: () => () => {
-            setError(null);
-            setIsLoading(false);
-        },
+        clearError,
     };
 
     return (

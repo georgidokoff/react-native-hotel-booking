@@ -4,6 +4,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EUR, Guest, PerNightSearch } from '../../shared/constants';
+import { randomGenerateDigits } from '../../helpers/commonHelper';
 
 import { defaultTheme } from '../../helpers/styleHelper';
 import { styles } from './styles'
@@ -61,10 +62,14 @@ export default function HotelScreen({ navigation, route }) {
                             </Text>
                         </TouchableOpacity> */}
                     </View>
-                    {hotel.gallery &&
+                    {!!hotel?.gallery &&
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.galleryScroll}>
-                            {hotel.gallery.map((image_url) =>
-                                <Image source={{ uri: image_url }} style={styles.galleryItem} />
+                            {String(hotel.gallery ?? '').split(' ')?.map((image_url, index) =>
+                                <Image
+                                    key={index}
+                                    source={{ uri: image_url }}
+                                    style={styles.galleryItem}
+                                />
                             )}
                         </ScrollView>
                     }
@@ -73,9 +78,9 @@ export default function HotelScreen({ navigation, route }) {
                     <Text style={styles.sectionTitle}>Details</Text>
                     <View style={styles.iconGrid}>
                         <DetailIcon name="office-building" label="Hotels" color={defaultTheme.primaryColor} />
-                        <DetailIcon name="bed-outline" label="4 Bedrooms" color={defaultTheme.primaryColor} />
-                        <DetailIcon name="bathtub-outline" label="2 Bathrooms" color={defaultTheme.primaryColor} />
-                        <DetailIcon name="arrow-expand-all" label="4000 sqft" color={defaultTheme.primaryColor} />
+                        <DetailIcon name="bed-outline" label={`${randomGenerateDigits(1, 5)} Bedrooms`} color={defaultTheme.primaryColor} />
+                        <DetailIcon name="bathtub-outline" label={`${randomGenerateDigits(1, 3)} Bathrooms`} color={defaultTheme.primaryColor} />
+                        <DetailIcon name="arrow-expand-all" label={`${randomGenerateDigits(2000, 5000)} sqft`} color={defaultTheme.primaryColor} />
                     </View>
 
                     <Text style={styles.sectionTitle}>Description</Text>
@@ -92,9 +97,9 @@ export default function HotelScreen({ navigation, route }) {
                     <Text style={styles.priceUnit}>{' '}{PerNightSearch}</Text>
                 </View>
                 <TouchableOpacity
-                disabled={isGuest}
-                style={[styles.bookBtn, isGuest && styles.disabledBookBtnText]}
-                onPress={bookNowHandler}>
+                    disabled={isGuest}
+                    style={[styles.bookBtn, isGuest && styles.disabledBookBtnText]}
+                    onPress={bookNowHandler}>
                     <Text style={styles.bookBtnText}>Book Now!</Text>
                 </TouchableOpacity>
             </SafeAreaView>

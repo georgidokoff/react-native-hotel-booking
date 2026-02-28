@@ -5,8 +5,8 @@ export const getRandomInteger = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export const randomGenerateReviews = () => {
-    return getRandomInteger(500, 700);
+export const randomGenerateDigits = (min = 500, max = 700) => {
+    return getRandomInteger(min, max);
 }
 
 export const getDate = (days) => {
