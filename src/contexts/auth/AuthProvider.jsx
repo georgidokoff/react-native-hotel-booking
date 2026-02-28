@@ -3,7 +3,7 @@ import { createContext, useState, useCallback, useEffect } from "react";
 import { callLogin, callRegister, callLoginGuest, callLogout } from "../../services/authService.js";
 import { setLogoutCallback } from "../../services/api.js";
 import { usePersistedState } from "../../hooks/usePersistedState.js";
-import { authKey } from "../../shared/constants.js";
+import { authKey, Authorised, Guest } from "../../shared/constants.js";
 
 export const AuthContext = createContext({
     isLoading: false,
@@ -147,8 +147,8 @@ export function AuthProvider({ children }) {
     };
 
     const contextValue = {
-        isAuthenticated: !!auth.user && !!auth.accessToken && auth.user?.status === 'ENABLED',
-        isGuest: !!auth.user && !!auth.accessToken && auth.user?.status === 'GUEST',
+        isAuthenticated: !!auth.user && !!auth.accessToken && auth.user?.status === Authorised,
+        isGuest: !!auth.user && !!auth.accessToken && auth.user?.status === Guest,
         isLoading,
         error,
         user: auth.user,

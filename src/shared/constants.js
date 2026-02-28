@@ -18,6 +18,9 @@ export const Completed = "Completed";
 export const Canceled = "Canceled";
 export const CanceledNRefunded = "Canceled & Refunded";
 export const Recommended = "Recommended";
+export const Popular = "Popular";
+export const Trending = "Trending";
+export const Luxury = "Luxury";
 
 //hotels
 export const PerNight = "/ per night";

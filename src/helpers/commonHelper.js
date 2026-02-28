@@ -1,3 +1,5 @@
+import { Canceled, Completed, Ongoing, Recommended, Popular, Trending, Luxury } from "../shared/constants";
+
 export const getRandomInteger = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -31,6 +33,6 @@ export const setDefaultRefresh = (setRefreshing) => {
     return setRefreshing(false);
 }
 
-export const tabs = ["Ongoing", "Completed", "Canceled"];
+export const tabs = [Ongoing, Completed, Canceled];
 
-export const categories = ["Recommended", "Popular", "Trending", "Luxury"];
+export const categories = [Recommended, Popular, Trending, Luxury];
