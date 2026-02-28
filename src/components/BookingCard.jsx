@@ -60,8 +60,8 @@ export default function BookingCard({ item, status, onCancelBookingCard, onRemov
                     </View>
                 </View>
             </View>
-
-            {status === Ongoing && (
+            
+            {status === Ongoing && item.checkIn > new Date().toISOString().substring(0, 10) && (
                 <View style={styles.actionRow}>
                     <TouchableOpacity
                         style={styles.cancelBtn}

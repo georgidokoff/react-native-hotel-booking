@@ -53,6 +53,7 @@ export const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
+    bottom: '10%',
     width: '100%',
     justifyContent: 'space-between',
   },
