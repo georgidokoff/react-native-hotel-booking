@@ -48,7 +48,51 @@ export const getStatusStyles = (status) => {
 export const defaultTheme = {
     primaryColor: "#1AB65C",
     greyColor: "#9E9E9E",
+    black: "#000",
     white: "#fff",
     rating: "#FFD700",
     faceBookColor: "#1877F2",
+    backgroundColor: '#e0e7ff',
+    camera: {
+        flex: 1,
+        container: {},
+        editButton: {
+            position: "absolute",
+            top: 0,
+            left: 20,
+            // left: 0,
+            backgroundColor: "#1AB65C",
+            padding: 6,
+            borderRadius: 8,
+        },
+        button: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            backgroundColor: "#000",
+            paddingVertical: 14,
+            paddingHorizontal: 24,
+            borderRadius: 12,
+        },
+        buttonText: {
+            fontSize: 16,
+            fontWeight: '600',
+            color: "#1AB65C",
+        },
+        permissionText: {
+            fontSize: 14,
+            color: "#9E9E9E",
+            textAlign: 'center',
+        },
+        modalContainer: {
+            flex: 1,
+            backgroundColor: "#000",
+        },
+        controls: {
+            flex: 1,
+            backgroundColor: 'transparent',
+            justifyContent: 'space-between',
+        },
+    }
 }

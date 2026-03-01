@@ -32,6 +32,11 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 60,
+  },
   editButton: {
     position: "absolute",
     bottom: 5,

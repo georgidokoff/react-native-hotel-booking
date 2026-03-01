@@ -14,13 +14,15 @@ import {
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
+import Camera from "../../common/Camera.jsx";
+
+import { validate } from "../../helpers/validatorsHelper.js";
 import { usePersistedState } from "../../hooks/usePersistedState.js";
 import { authKey, Guest, nameType, phoneType } from "../../shared/constants.js";
 import { useUser } from "../../contexts/users/useUser.js";
 
 import { defaultTheme } from "../../helpers/styleHelper";
 import { styles } from "./styles";
-import { validate } from "../../helpers/validatorsHelper.js";
 
 export default function ProfileScreen({ navigation, route }) {
     const [errorState, setErrorState] = useState({ valid: true, message: "" });
@@ -28,6 +30,7 @@ export default function ProfileScreen({ navigation, route }) {
     const [refreshing, setRefreshing] = useState(false);
     const { updateUser, isLoading, error, clearError } = useUser();
     const phoneInputRef = useRef(null);
+    const [profileImageUri, setProfileImageUri] = useState(null);
     const [auth, setAuth] = usePersistedState(authKey, {
         user: null,
         accessToken: null,
@@ -83,6 +86,10 @@ export default function ProfileScreen({ navigation, route }) {
             return;
         }
 
+        if (!!profileImageUri) {
+            user.image = profileImageUri;
+        }
+
         const updatedUser = await updateUser(user, auth?.accessToken);
 
         setAuth((prevAuth) => ({
@@ -120,7 +127,8 @@ export default function ProfileScreen({ navigation, route }) {
             return updatedUser;
         });
     };
-
+    console.log('user', user);
+    console.log('profileImageUri', profileImageUri);
     const ProfileInput = ({ placeholder, icon, text, field, disabled }) => {
         const [inputValue, setInputValue] = useState(text);
 
@@ -179,11 +187,13 @@ export default function ProfileScreen({ navigation, route }) {
             >
                 <View style={styles.avatarContainer}>
                     <View style={[styles.avatarPlaceholder, isLoading ? { display: 'none' } : {}]}>
-                        <Ionicons name="person" size={80} color="#E0E0E0" />
-                        {/* TODO: Add image picker functionality */}
-                        {/* <TouchableOpacity style={styles.editButton}>
-                        <MaterialCommunityIcons name="pencil" size={16} color="white" />
-                        </TouchableOpacity> */}
+                        {
+                            (!!profileImageUri || !!user?.image )
+                            ? <Image source={{ uri: !!profileImageUri ? profileImageUri : user.image ?? "" }} style={styles.avatarImage} />
+                            : <Ionicons name="person" size={80} color="#E0E0E0" />
+                        }
+                        {/* <ImagePicker onImagePicked={setImageUri} imageUri={imageUri} /> */}
+                        <Camera disabled={user?.status === Guest} onPhotoTaken={setProfileImageUri} />
                     </View>
                 </View>
 
