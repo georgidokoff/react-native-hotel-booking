@@ -73,7 +73,8 @@ export const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginVertical: 15
+        marginVertical: 15,
+        color: '#212121'
     },
     seeAllText: {
         color: defaultTheme.primaryColor,
@@ -124,4 +125,10 @@ export const styles = StyleSheet.create({
         shadowColor: defaultTheme.greyColor,
 
     },
+    descriptionText: {
+        color: '#424242',
+        lineHeight: 22,
+        marginBottom: 30,
+        textAlign: 'justify',
+    }
 });

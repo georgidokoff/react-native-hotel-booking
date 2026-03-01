@@ -127,8 +127,7 @@ export default function ProfileScreen({ navigation, route }) {
             return updatedUser;
         });
     };
-    console.log('user', user);
-    console.log('profileImageUri', profileImageUri);
+    
     const ProfileInput = ({ placeholder, icon, text, field, disabled }) => {
         const [inputValue, setInputValue] = useState(text);
 

@@ -38,7 +38,30 @@ export const styles = StyleSheet.create({
     dateRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 30
+        marginBottom: 30,
+        color: '#212121'
+    },
+    dateLabel: {
+        fontSize: 16,
+        color: '#666'
+    },
+    dateValueText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#212121'
+    },
+    dateValueContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        // backgroundColor: '#F8FEFA',
+        // borderRadius: 20,
+        // paddingHorizontal: 15,
+        // paddingVertical: 10
+    },
+    dateText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#212121'
     },
     sectionTitle: {
         fontSize: 18,
@@ -63,7 +86,8 @@ export const styles = StyleSheet.create({
     counterText: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginHorizontal: 30
+        marginHorizontal: 30,
+        color: '#212121'
     },
 
     // Buttons

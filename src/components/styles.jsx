@@ -22,6 +22,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 20,
     fontSize: 10,
+    color: "#212121",
   },
   featuredCard: {
     width: 300,
@@ -117,9 +118,10 @@ export const styles = StyleSheet.create({
   listName: {
     fontSize: 16,
     fontWeight: "bold",
+    color: defaultTheme.black
   },
   listLocation: {
-    color: "#666",
+    color: "#667",
     marginVertical: 4,
   },
   listRatingRow: {

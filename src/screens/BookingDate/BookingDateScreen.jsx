@@ -129,8 +129,8 @@ export default function BookingDateScreen({ navigation, route }) {
         <TouchableOpacity style={styles.dateBox} onPress={onPress}>
             <Text style={styles.dateLabel}>{label}</Text>
             <View style={styles.dateValueContainer}>
-                <Text style={styles.dateValueText}>{date}</Text>
                 <Ionicons name="calendar-outline" size={20} color="#212121" />
+                <Text style={styles.dateValueText}>{date}</Text>
             </View>
         </TouchableOpacity>
     );
