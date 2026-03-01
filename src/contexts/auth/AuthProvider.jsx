@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
         // ensure loading state is set to false after period of time
         setTimeout(() => {
             setIsLoading(false);
-        }, 1000);
+        }, 2000);
     }, [auth?.accessToken === null]);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -60,22 +60,30 @@ export function AuthProvider({ children }) {
     const login = async (login, password) => {
         try {
             setIsLoading(true);
-            const response = await callLogin(login, password);
+            
+            const response = await callLogin(login, password)
+                .then((res) => {
+                    let user = {
+                        ...res,
+                        id: res?.objectId,
+                        locale: res?.blUserLocale,
+                        status: res?.userStatus
+                    }
 
-            let user = {
-                id: response?.objectId,
-                email: response?.email,
-                name: response?.name,
-                phone: response?.phone,
-                locale: response?.blUserLocale,
-                status: response?.userStatus,
-            }
+                    const accessToken = res['user-token'];
+                    
+                    setAuth({ user, accessToken });
+                    
+                })
+                .catch((err) => {
+                    console.error('Login error:', err);
+                    setError('An error occurred during login');
+                    return { valid: false, message: 'An error occurred during login' };
+                });
 
-            const accessToken = response['user-token'];
-
-            setAuth({ user, accessToken });
         } catch (err) {
             // console.log('login error', err, JSON.stringify(err), err.stack);
+            console.error('Login error:', err);
             setError('An error occurred during login');
             return { valid: false, message: 'An error occurred during login' };
         } finally {
@@ -159,7 +167,7 @@ export function AuthProvider({ children }) {
         loginGuest,
         logout,
     };
-
+    
     return (
         <AuthContext.Provider value={contextValue}>
             {children}
