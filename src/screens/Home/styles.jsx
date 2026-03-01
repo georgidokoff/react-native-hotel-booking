@@ -48,7 +48,8 @@ export const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: defaultTheme.greyColor
   },
   seeAll: {
     color: defaultTheme.primaryColor,

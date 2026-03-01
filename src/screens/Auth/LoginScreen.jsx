@@ -185,7 +185,7 @@ export default function LoginScreen() {
             style={styles.footerLink}
             onPress={onSignUpNavigateHandler}
           >
-            <Text>
+            <Text style={styles.footerLink}>
               Don't have an account?{" "}
               <Text style={styles.greenText}>Sign up</Text>
             </Text>

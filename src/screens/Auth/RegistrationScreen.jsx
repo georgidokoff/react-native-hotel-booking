@@ -179,7 +179,7 @@ export default function RegistrationScreen() {
             style={styles.footerLink}
             onPress={onSignInHandlerPress}
           >
-            <Text style={styles.promptText}>
+            <Text style={styles.footerLink}>
               Already have an account?{" "}
               <Text style={styles.greenText}>Sign in</Text>
             </Text>

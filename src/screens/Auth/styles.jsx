@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 40,
+    color: defaultTheme.black,
   },
 
   primaryBtn: {
@@ -45,6 +46,7 @@ export const styles = StyleSheet.create({
     marginLeft: 12,
     fontWeight: "600",
     fontSize: 16,
+    color: defaultTheme.black,
   },
 
   modalOverlay: {
