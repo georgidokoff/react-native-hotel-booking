@@ -11,6 +11,7 @@ import { usePersistedState } from "../../hooks/usePersistedState";
 import { useHotel } from "../../contexts/hotels/useHotel";
 
 import { styles } from "./styles";
+import Empty from "../../common/Empty";
 
 export default function SearchScreen({ navigation }) {
   const buttomTabHeight =
@@ -91,7 +92,10 @@ export default function SearchScreen({ navigation }) {
               onPress={() => loadHotelHandler(item)}
             />
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
+          ListEmptyComponent={
+            <Empty message="No hotels found." />
+          }
         />
       </View>
     </View>

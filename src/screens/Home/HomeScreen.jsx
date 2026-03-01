@@ -23,6 +23,7 @@ import { Tab } from "../../common/Tab";
 import { ImagesAssets } from "../../../assets/images";
 import { styles } from "./styles";
 import { TicketModal } from "../../components/TicketModal";
+import Empty from "../../common/Empty";
 
 export default function HomeScreen({ navigation }) {
     const [visibleViewTicket, setVisibleViewTicket] = useState(false);
@@ -46,7 +47,7 @@ export default function HomeScreen({ navigation }) {
 
     const fetchingBookings = useCallback(async () => {
         clearError();
-        
+
         if (!!auth) {
             await getByUserId(auth.user.id, auth.accessToken)
                 .then((bookings) => {
@@ -201,23 +202,26 @@ export default function HomeScreen({ navigation }) {
                 showsHorizontalScrollIndicator={false}
                 style={styles.featuredScroll}
             >
-                {hotelsData && hotelsData
-                    .filter((h) => h.id !== 0 && (activeTab === Recommended || h.category === activeTab))
-                    .slice(0, 10)
-                    .map((hotel) => (
-                        <HotelCard
-                            key={hotel.id}
-                            imageUrl={hotel.image_url}
-                            rating={hotel.ratings}
-                            name={hotel.name}
-                            city={hotel.city}
-                            country={hotel.country_code}
-                            price={hotel.price_per_night}
-                            kind={PerNight}
-                            feature={true}
-                            onPress={() => loadHotelHandler(hotel)}
-                        />
-                    ))}
+                
+                {hotelsData && hotelsData.length > 0
+                    ? hotelsData
+                        .filter((h) => h.id !== 0 && (activeTab === Recommended || h.category === activeTab))
+                        .slice(0, 30)
+                        .map((hotel) => (
+                            <HotelCard
+                                key={hotel.id}
+                                imageUrl={hotel.image_url}
+                                rating={hotel.ratings}
+                                name={hotel.name}
+                                city={hotel.city}
+                                country={hotel.country_code}
+                                price={hotel.price_per_night}
+                                kind={PerNight}
+                                feature={true}
+                                onPress={() => loadHotelHandler(hotel)}
+                            />
+                        ))
+                    : <Empty />}
             </ScrollView>
 
             {/* --- Ticket Modal --- */}
