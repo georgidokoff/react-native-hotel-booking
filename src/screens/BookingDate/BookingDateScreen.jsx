@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +17,7 @@ import { styles } from './styles'
 
 export default function BookingDateScreen({ navigation, route }) {
     const [isSuccess, setIsSuccess] = useState(false);
+    const [errorState, setErrorState] = useState({ valid: true, message: "" });
     const [visibleViewTicket, setVisibleViewTicket] = useState(false);
     const params = useState(route.params && route.params);
     const item = params.at(0);
@@ -24,11 +25,15 @@ export default function BookingDateScreen({ navigation, route }) {
         user: null,
         accessToken: null,
     });
-    const { create } = useBooking();
+    const { create, isLoading, error, clearError } = useBooking();
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [guests, setGuests] = useState(1);
     let book = {};
+
+    useEffect(() => {
+        setErrorState({ valid: !error, message: error });
+    }, [route.params, error]);
 
     const onDayPressHandler = (date) => {
         const dateString = date.dateString;
@@ -96,17 +101,25 @@ export default function BookingDateScreen({ navigation, route }) {
     }
 
     const payBookingHandler = async () => {
+        clearError();
+
         if (book && book.price > 0) {
             book.tag = 'Paid';
             book.state = 'Ongoing';
-            
+
             await create(book, auth?.accessToken)
                 .then((newBooking) => {
-                    setIsSuccess(true);
+                    if (!!newBooking) {
+                        setIsSuccess(true);
+                    }
                 })
-                .catch((err) => console.error('Error during booking payment:', err))
+                .catch((err) => {
+                    setErrorState({ valid: false, message: "Error creating booking." });
+                    return "Error creating booking.";
+                });
         }
     }
+
     const onViewTicketHandler = () => {
         setVisibleViewTicket(true);
     }
@@ -114,13 +127,13 @@ export default function BookingDateScreen({ navigation, route }) {
     const onCloseViewTicket = () => {
         setVisibleViewTicket(false);
     }
-    
+
     const onCLoseHandler = () => {
         navigation.goBack();
 
         try {
             navigation.goBack();
-        } catch {}
+        } catch { }
 
         setIsSuccess(false);
     }
@@ -134,7 +147,7 @@ export default function BookingDateScreen({ navigation, route }) {
             </View>
         </TouchableOpacity>
     );
-    
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -148,6 +161,10 @@ export default function BookingDateScreen({ navigation, route }) {
                         theme={styles.calendarTheme}
                     />
                 </View>
+
+                {errorState && !errorState.valid && (
+                    <Text style={styles.errorText}>{errorState.message}</Text>
+                )}
 
                 {startDate && endDate &&
                     <View style={styles.dateRow}>
@@ -196,7 +213,7 @@ export default function BookingDateScreen({ navigation, route }) {
                         ...book,
                         qrCOdeValue: book.name,
                         resourceTypeName: `${book.name ?? ''}\n${book.kind ?? ''}`,
-                        occupancy: `${guests?? ''}`,
+                        occupancy: `${guests ?? ''}`,
                         userFullname: `${auth?.user?.name ?? ''}`,
                         userPhone: `${auth?.user?.phone ?? ''}`,
                     }}
