@@ -56,8 +56,9 @@ export default function HomeScreen({ navigation }) {
                     setRefreshing(false);
                 })
                 .catch((err) => {
-                    console.error('Error fetching bookings:', err);
                     setRefreshing(false);
+                    setErrorState({ valid: false, message: "Error fetching bookings." });
+                    return "Error fetching bookings.";
                 });
         }
     }, [auth.user, auth.accessToken, getByUserId]);
