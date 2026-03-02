@@ -23,7 +23,6 @@ export default function RegistrationScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorState, setErrorState] = useState({ valid: true, message: "" });
-  // const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
     setErrorState({ valid: true, message: "" });
@@ -40,7 +39,6 @@ export default function RegistrationScreen() {
       onSignUp(email, password)
         .then((validation) => {
           if (!validation?.valid) {
-            // handle validation error
             setErrorState(validation);
           }
         });
@@ -136,19 +134,6 @@ export default function RegistrationScreen() {
               />
             </TouchableOpacity>
           </View>
-
-          {/*TODO: Remember Me Toggle */}
-          {/* <View style={styles.rememberRow}>
-            <TouchableOpacity 
-              style={styles.checkboxRow} 
-              onPress={() => setRememberMe(!rememberMe)}
-            >
-              <View style={[styles.checkbox, rememberMe && styles.checkboxSelected]}>
-                {rememberMe && <Ionicons name="checkmark" size={12} color="white" />}
-              </View>
-              <Text style={styles.rememberText}>Remember me</Text>
-            </TouchableOpacity>
-          </View> */}
 
           {errorState && !errorState.valid && (
             <Text style={styles.errorText}>{errorState.message}</Text>

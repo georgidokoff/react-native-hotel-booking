@@ -23,7 +23,6 @@ export default function LoginScreen() {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [errorState, setErrorState] = useState({ valid: true, message: "" });
-  //   const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
       setErrorState({ valid: true, message: "" });
@@ -46,7 +45,6 @@ export default function LoginScreen() {
       onSignIn(login, password)
         .then((validation) => {
           if (!validation?.valid) {
-            // handle validation error
             setErrorState(validation);
           }
         });
@@ -136,22 +134,6 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* TODO: Add Remember Me functionality */}
-          {/* <View style={styles.rememberRow}>
-            <TouchableOpacity
-              style={styles.checkboxRow}
-              onPress={() => setRememberMe(!rememberMe)}
-            >
-              <View
-                style={[styles.checkbox, rememberMe && styles.checkboxSelected]}
-              >
-                {rememberMe && (
-                  <Ionicons name="checkmark" size={12} color="white" />
-                )}
-              </View>
-              <Text style={styles.rememberText}>Remember me</Text>
-            </TouchableOpacity>
-          </View> */}
           {errorState && !errorState.valid && (
             <Text style={styles.errorText}>{errorState.message}</Text>
           )}
@@ -161,11 +143,6 @@ export default function LoginScreen() {
           >
             <Text style={styles.signBtnText}>Sign in</Text>
           </TouchableOpacity>
-
-          {/* Todo: Add forgot password functionality */}
-          {/* <TouchableOpacity>
-            <Text style={styles.forgotText}>Forgot the password?</Text>
-          </TouchableOpacity> */}
 
           <View style={styles.dividerRow}>
             <View style={styles.line} />

@@ -56,11 +56,6 @@ export default function HotelScreen({ navigation, route }) {
                     {/* Gallery Section */}
                     <View style={styles.sectionHeader}>
                         <Text style={styles.sectionTitle}>Gallery Photos</Text>
-                        {/* Implement load all images */}
-                        {/* <TouchableOpacity>
-                            <Text style={styles.seeAllText}>See All
-                            </Text>
-                        </TouchableOpacity> */}
                     </View>
                     {!!hotel?.gallery &&
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.galleryScroll}>

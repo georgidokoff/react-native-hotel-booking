@@ -16,18 +16,15 @@ export default function AuthGateScreen({ navigation }) {
     const signInHandler = async (email, password) => {
         clearError();
 
-        // validation can be added here
         const emailValidation = validate(email, emailType);
 
         if (!emailValidation?.valid) {
-            // handle invalid email
             return emailValidation;
         }
 
         const passwordValidation = validate(password, passwordType);
 
         if (!passwordValidation?.valid) {
-            // handle invalid password
             return passwordValidation;
         }
 
@@ -41,17 +38,14 @@ export default function AuthGateScreen({ navigation }) {
     const signUpHandler = async (email, password) => {
         clearError();
 
-        // validation can be added here
         const emailValidation = validate(email, emailType);
 
         if (!emailValidation?.valid) {
-            // handle invalid email
             return emailValidation;
         }
 
         const passwordValidation = validate(password, passwordType);
         if (!passwordValidation?.valid) {
-            // handle invalid password
             return passwordValidation;
         }
 

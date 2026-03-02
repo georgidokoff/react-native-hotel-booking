@@ -8,8 +8,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     ActivityIndicator,
-    RefreshControl,
-    Keyboard
+    RefreshControl
 } from "react-native";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -72,7 +71,6 @@ export default function ProfileScreen({ navigation, route }) {
         user.locale = auth.user.locale;
         user.status = auth.user.status;
 
-        // Validate name and phone before sending update request
         const nameValidation = validate(user.name, nameType);
         const phoneValidation = validate(user.phone, phoneType);
 
@@ -133,7 +131,6 @@ export default function ProfileScreen({ navigation, route }) {
 
         const handleKeyPress = ({ nativeEvent }) => {
             if (nativeEvent.key === "Enter" && field === "name" && inputValue.trim()) {
-                // Move to phone input if name is filled
                 phoneInputRef.current?.focus();
             }
         };
@@ -188,7 +185,10 @@ export default function ProfileScreen({ navigation, route }) {
                     <View style={[styles.avatarPlaceholder, isLoading ? { display: 'none' } : {}]}>
                         {
                             (!!profileImageUri || !!user?.image )
-                            ? <Image source={{ uri: !!profileImageUri ? profileImageUri : user.image ?? "" }} style={styles.avatarImage} />
+                            ? <Image source={{ uri: !!profileImageUri
+                                                    ? profileImageUri
+                                                    : user.image ?? "" }}
+                                                    style={styles.avatarImage} />
                             : <Ionicons name="person" size={80} color="#E0E0E0" />
                         }
                         {/* <ImagePicker onImagePicked={setImageUri} imageUri={imageUri} /> */}
@@ -229,7 +229,6 @@ export default function ProfileScreen({ navigation, route }) {
                         value={user?.phone}
                         field={"phone"}
                         onChangeText={(input) => {
-                            // Only allow digits and plus sign
                             const digitsOnly = input.replace(/[^+0-9]/g, "");
                             updateInputHandler(digitsOnly, "phone");
                         }}
