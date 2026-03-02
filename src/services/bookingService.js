@@ -7,9 +7,7 @@ export async function getByUserId(userId, accessToken, pageSize = null, offset =
         const result = await api.get(`/bookings?where=userId${equalSymbol}'${userId}'&sortBy=created%20desc&pageSize=${pageSize ?? 100}&offset=${offset ?? 0}`);
         return result.data;
     } catch (error) {
-        console.error("Error fetching bookings by user ID:", error.response ? error.response.data : error.message);
         throw error;
-        //throw new Error("Failed to fetch bookings. Please check your permissions.");
     }
 }
 
@@ -20,9 +18,7 @@ export async function create(bookingData, accessToken) {
         const result = await api.post('/bookings', bookingData);
         return result.data;
     } catch (error) {
-        console.error("Error creating booking:", error.response ? error.response.data : error.message);
         throw error;
-        //throw new Error("Failed to create booking. Please check your permissions.");
     }
 }
 

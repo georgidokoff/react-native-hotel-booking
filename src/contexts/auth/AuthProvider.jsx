@@ -16,7 +16,7 @@ export const AuthContext = createContext({
     register: async (email, password, name) => { },
     loginGuest: async () => { },
     logout: async () => { },
-    clearError: () => { },
+    clearError() { },
 });
 
 export function AuthProvider({ children }) {
@@ -101,7 +101,7 @@ export function AuthProvider({ children }) {
             const response = await callRegister(email, password, name);
 
             if (response?.userStatus === "ENABLED") {
-               return await login(email, password);
+                return await login(email, password);
             }
 
             return response;
@@ -164,7 +164,7 @@ export function AuthProvider({ children }) {
             });
     };
 
-    const clearError = () => () => {
+    const clearError = () => {
         setError(null);
         setIsLoading(false);
     };

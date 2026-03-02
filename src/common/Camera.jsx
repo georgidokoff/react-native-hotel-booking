@@ -63,7 +63,6 @@ export default function Camera({
                 }
             }
         } catch (error) {
-            console.error('Error launching camera:', error);
             return { valid: false, message: 'An error occurred while trying to access the camera.' };
         }
     };

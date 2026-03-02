@@ -6,7 +6,6 @@ export async function getAll(pageSize = 100, offset = 0) {
 
         return result.data;
     } catch (error) {
-        console.error("Error fetching hotels:", error.response ? error.response.data : error.message);
         throw error;
     }
 }
@@ -18,7 +17,6 @@ export async function getById(hotelId) {
 
     return result.data;
     } catch (error) {
-        console.error("Error fetching hotel by ID:", error.response ? error.response.data : error.message);
         throw error;
     }
 }

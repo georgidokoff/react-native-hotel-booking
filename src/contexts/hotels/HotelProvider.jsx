@@ -7,7 +7,7 @@ export const HotelContext = createContext({
     error: null,
     getAllHandler() { },
     getHotelById(hotelId) { },
-    clearError: () => { },
+    clearError() { },
 });
 
 export function HotelProvider({ children }) {
@@ -29,7 +29,6 @@ export function HotelProvider({ children }) {
             setHotels(result);
             return result;
         } catch (err) {
-            console.error("Error fetching hotels:", err);
             setError("An error occurred while fetching hotels.");
             return { valid: false, message: "An error occurred while fetching hotels." };
         } finally {
@@ -40,12 +39,11 @@ export function HotelProvider({ children }) {
     const getHotelById = async (hotelId) => {
         try {
             setIsLoading(true);
-            const hotel = await getById(hotelId);
+            const hotel = await getById(!!hotelId ? hotelId : "");
 
             return hotel;
             
         } catch (error) {
-            console.error("Error fetching hotel by ID:", error);
             setError("An error occurred while fetching hotel data.");
             return { valid: false, message: "An error occurred while fetching hotel data." };
         } finally {
@@ -53,7 +51,7 @@ export function HotelProvider({ children }) {
         }
     };
 
-    const clearError = () => () => {
+    const clearError = () => {
         setError(null);
         setIsLoading(false);
     };

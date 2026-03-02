@@ -8,7 +8,7 @@ export const UserContext = createContext({
     getById(userId, accessToken) { },
     updateUser(userData, accessToken) { },
     deleteUserById(userId, accessToken) { },
-    clearError: () => { },
+    clearError() { },
 });
 
 export function UserProvider({ children }) {
@@ -24,8 +24,8 @@ export function UserProvider({ children }) {
             const userData = await getById(userId, accessToken);
             setUser(userData);
         } catch (err) {
-            console.error("Error fetching user by ID:", err);
             setError("An error occurred while fetching user data.");
+            return "An error occurred while fetching user data.";
         } finally {
             setIsLoading(false);
         }
@@ -61,7 +61,7 @@ export function UserProvider({ children }) {
         }
     };
 
-    const clearError = () => () => {
+    const clearError = () => {
         setError(null);
         setIsLoading(false);
     };

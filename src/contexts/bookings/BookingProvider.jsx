@@ -17,7 +17,7 @@ export const BookingContext = createContext({
     async getByUserId(userId, accessToken) { },
     async update(bookingData, accessToken) { },
     async remove(bookingId, accessToken) { },
-    clearError: () => { },
+    clearError() { },
 });
 
 export function BookingProvider({ children }) {
@@ -37,9 +37,9 @@ export function BookingProvider({ children }) {
 
             const bookingsData = await getByUserId(userId, accessToken);
 
-            setBookings(bookingsData || []);
+            setBookings(bookingsData);
 
-            return bookingsData || []
+            return bookingsData;
         } catch (err) {
             // Handle auth errors (401, token invalid)
             if (err.isAuthError) {
@@ -51,13 +51,12 @@ export function BookingProvider({ children }) {
                     user: null,
                 });
                 logout();
-                console.error("Auth error detected, user will be logged out by API interceptor.");
+
                 return [];
             }
 
             setError("An error occurred while fetching bookings.");
             setBookings([]);
-            console.error("Error fetching bookings:", err);
             return [];
         }
         finally {
@@ -69,10 +68,10 @@ export function BookingProvider({ children }) {
         try {
             setIsLoading(true);
             setError(null);
+            
             const newbooking = await create(bookingData, accessToken);
 
             setBookings((prevbookings) => [...prevbookings, newbooking]);
-
             return newbooking;
         } catch (err) {
             if (err.isAuthError) {
@@ -84,13 +83,11 @@ export function BookingProvider({ children }) {
                 });
                 logout();
                 setError("Your session has expired. Please login again.");
-                console.error("Auth error detected, user will be logged out by API interceptor.");
                 setauth
                 return {};
             }
 
             setError("An error occurred while creating the booking.");
-            console.error("Error creating booking:", err);
             return null;
         }
         finally {
@@ -121,13 +118,11 @@ export function BookingProvider({ children }) {
                 });
                 logout();
                 setError("Your session has expired. Please login again.");
-                console.error("Auth error detected, user will be logged out by API interceptor.");
                 return {};
             }
 
             setError("An error occurred while updating the booking.");
-            console.error("Error updating booking:", err);
-            return null;
+            return "An error occurred while updating the booking.";
         }
         finally {
             setIsLoading(false);
@@ -153,12 +148,10 @@ export function BookingProvider({ children }) {
                 });
                 logout();
                 setError("Your session has expired. Please login again.");
-                console.error("Auth error detected, user will be logged out by API interceptor.");
                 return false;
             }
 
             setError("An error occurred while removing the booking.");
-            console.error("Error removing booking:", err);
             return false;
         }
         finally {
@@ -166,7 +159,7 @@ export function BookingProvider({ children }) {
         }
     };
 
-    const clearError = () => () => {
+    const clearError = () => {
         setError(null);
         setIsLoading(false);
     };
