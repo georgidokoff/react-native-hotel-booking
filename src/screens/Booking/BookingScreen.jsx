@@ -2,11 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import {
     View,
     FlatList,
+    Text,
     RefreshControl,
     ActivityIndicator,
 } from "react-native";
 
 import BookingCard from "../../components/BookingCard";
+import Empty from "../../common/Empty.jsx";
 import { Tab } from "../../common/Tab.jsx";
 
 import { usePersistedState } from "../../hooks/usePersistedState.js";
@@ -29,29 +31,42 @@ export default function BookingScreen({ navigation, route }) {
     const [bookingsData, setBookingsData] = useState([]);
 
     const fetchBookings = async () => {
+        clearError();
+
         if (auth && auth.user.id && auth.accessToken) {
             const currentDate = new Date().toISOString().substring(0, 10);
 
-            await getByUserId(auth.user.id, auth.accessToken)
-                .then((bookings) => {
-                    if (!!bookings) {
-                        setBookingsData(bookings
-                            .map((b) => ({
-                            ...b,
-                            kind: hotels?.find(h => h?.id === b?.hotelId)?.kind,
-                            occupancy: hotels?.find(h => h?.id === b?.hotelId)?.occupancy,
-                            state: (b.state === Ongoing && b.checkIn < currentDate) 
-                                ? Completed 
-                                : b.state
-                        })));
-                    }
+            try {
+                await getByUserId(auth.user.id, auth.accessToken)
+                    .then((bookings) => {
+                        let bookingsMappedData = [];
+                        if (Array.isArray(bookings) && bookings.length > 0) {
+                            bookingsMappedData = bookings
+                                .map((b) => ({
+                                    ...b,
+                                    kind: hotels?.find(h => h?.id === b?.hotelId)?.kind,
+                                    occupancy: hotels?.find(h => h?.id === b?.hotelId)?.occupancy,
+                                    state: (b.state === Ongoing && b.checkIn < currentDate)
+                                        ? Completed
+                                        : b.state
+                                }));
 
-                    setRefreshing(false);
-                })
-                .catch((err) => {
-                    console.error("Error fetching bookings:", err);
-                    setErrorState({ valid: false, message: "Error fetching bookings." })
-                });
+                        }
+
+                        setBookingsData(bookingsMappedData);
+                        setRefreshing(false);
+                    })
+                    .catch((err) => {
+                        setBookingsData([]);
+
+                        setErrorState({ valid: false, message: "Error fetching bookings." })
+                    });
+
+            } catch (err) {
+                setBookingsData([]);
+
+                setErrorState({ valid: false, message: "Error fetching bookings." })
+            }
         }
     };
 
@@ -80,14 +95,20 @@ export default function BookingScreen({ navigation, route }) {
         canceledBooking.state = Canceled;
         canceledBooking.tag = CanceledNRefunded;
 
-        await update(canceledBooking, auth.accessToken);
+        try {
+             await update(canceledBooking, auth.accessToken);
 
-        if (!!bookingsData) {
+        if (Array.isArray(bookingsData) && bookingsData.length > 0) {
             setBookingsData([
                 ...bookingsData?.filter((od) => od.objectId !== canceledBooking.objectId),
                 canceledBooking,
             ]);
         }
+        } catch (err) {
+            setBookingsData([]);
+
+            setErrorState({ valid: false, message: "Error canceling booking." });
+        }      
     };
 
     const onRemoveBookingCardHandler = async (id) => {
@@ -97,7 +118,8 @@ export default function BookingScreen({ navigation, route }) {
             setBookingsData(!!bookingsData ? bookingsData.filter((od) => (od.objectId ?? od.id) !== id) : []);
 
         } catch (err) {
-            console.error("Error removing booking:", err);
+            setBookingsData([]);
+
             setErrorState({ valid: false, message: "Error removing booking." });
         }
     }
@@ -116,39 +138,41 @@ export default function BookingScreen({ navigation, route }) {
                 ))}
             </View>
 
-            {isLoading && (
-                <View style={styles.loaderContainer}>
-                    <ActivityIndicator size='large' color={defaultTheme.primaryColor} />
-                </View>
-            )}
-
             {errorState && !errorState.valid && (
                 <Text style={styles.errorText}>{errorState.message}</Text>
             )}
 
-            <FlatList
-                data={
-                    bookingsData && bookingsData.filter((od) =>
-                        od.state === activeTab)
-                }
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-                keyExtractor={(item) => item.created}
-                renderItem={({ item }) => (
-                    <BookingCard
-                        item={{
-                            ...item,
-                            userFullname: auth?.user?.name,
-                            userPhone: auth?.user?.phone,
-                        }}
-                        status={activeTab}
-                        onCancelBookingCard={cancelBookingCardHandler}
-                        onRemoveBookingCard={onRemoveBookingCardHandler}
-                    />
-                )}
-                contentContainerStyle={{ padding: 20 }}
-            />
+            {isLoading ? (
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size='large' color={defaultTheme.primaryColor} />
+                </View>
+            ) : (
+                <FlatList
+                    data={
+                        bookingsData && bookingsData.filter((od) =>
+                            od.state === activeTab)
+                    }
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                    keyExtractor={(item) => item.created}
+                    renderItem={({ item }) => (
+                        <BookingCard
+                            item={{
+                                ...item,
+                                userFullname: auth?.user?.name,
+                                userPhone: auth?.user?.phone,
+                            }}
+                            status={activeTab}
+                            onCancelBookingCard={cancelBookingCardHandler}
+                            onRemoveBookingCard={onRemoveBookingCardHandler}
+                        />
+                    )}
+                    contentContainerStyle={{ padding: 20 }}
+                    ListEmptyComponent={
+                        <Empty message="No bookings found." />
+                    }
+                />)}
         </View>
     );
 }
