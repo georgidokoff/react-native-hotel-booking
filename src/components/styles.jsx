@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     borderBlockColor: defaultTheme.primaryCollor,
     borderWidth: 0.5,
+    marginTop: 20,
     marginLeft: 20,
     marginRight: 20,
     marginBottom: 20,
@@ -21,7 +22,7 @@ export const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: 20,
-    fontSize: 10,
+    fontSize: 16,
     color: "#212121",
   },
   featuredCard: {

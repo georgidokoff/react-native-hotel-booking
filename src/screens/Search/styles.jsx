@@ -4,5 +4,15 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff"
-  }
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#F75555",
+    textAlign: "center",
+    marginBottom: 16,
+  },
 });

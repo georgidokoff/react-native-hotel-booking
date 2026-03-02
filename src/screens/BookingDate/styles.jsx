@@ -129,5 +129,10 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         marginBottom: 10
-    }
+    },
+    errorText: {
+        color: "#F75555",
+        textAlign: "center",
+        marginBottom: 16,
+    },
 });
