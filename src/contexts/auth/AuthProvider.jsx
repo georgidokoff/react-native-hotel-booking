@@ -60,8 +60,8 @@ export function AuthProvider({ children }) {
     const login = async (login, password) => {
         try {
             setIsLoading(true);
-            
-            const response = await callLogin(login, password)
+
+            return await callLogin(login, password)
                 .then((res) => {
                     let user = {
                         ...res,
@@ -71,11 +71,15 @@ export function AuthProvider({ children }) {
                     }
 
                     const accessToken = res['user-token'];
-                    
+
                     setAuth({ user, accessToken });
-                    
+
                 })
                 .catch((err) => {
+                    setAuth({
+                        accessToken: null,
+                        user: null,
+                    });
                     console.error('Login error:', err);
                     setError('An error occurred during login');
                     return { valid: false, message: 'An error occurred during login' };
@@ -97,10 +101,16 @@ export function AuthProvider({ children }) {
             const response = await callRegister(email, password, name);
 
             if (response?.userStatus === "ENABLED") {
-                await login(email, password);
+               return await login(email, password);
             }
 
+            return response;
+
         } catch (err) {
+            setAuth({
+                accessToken: null,
+                user: null,
+            });
             setError('An error occurred during registration');
             return { valid: false, message: 'An error occurred during registration' };
         }
@@ -125,6 +135,11 @@ export function AuthProvider({ children }) {
             setAuth({ user, accessToken });
 
         } catch (err) {
+            setAuth({
+                accessToken: null,
+                user: null,
+            });
+            console.error('Guest login error:', err);
             setError('An error occurred during guest login');
             return { valid: false, message: 'An error occurred during guest login' };
         } finally {
@@ -167,7 +182,7 @@ export function AuthProvider({ children }) {
         loginGuest,
         logout,
     };
-    
+
     return (
         <AuthContext.Provider value={contextValue}>
             {children}
