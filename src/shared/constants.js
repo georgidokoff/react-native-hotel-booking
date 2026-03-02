@@ -28,3 +28,6 @@ export const PerNightSearch = "/ night";
 
 //currency
 export const EUR = "€"
+
+//search
+export const keyboardDismissDelay = 2000;

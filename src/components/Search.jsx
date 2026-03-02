@@ -1,18 +1,29 @@
+import { useEffect, useState } from "react";
 import { View, TextInput, Keyboard } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+import { keyboardDismissDelay } from "../shared/constants";
 
 import { defaultTheme } from "../helpers/styleHelper";
 import { styles } from "./styles";
 
 export default function Search({ input, setInput }) {
+  const [dateTimeUnix, setDateTimeUnix] = useState(0);
+
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (input) {
+        setDateTimeUnix(new Date().getTime());
+        Keyboard.dismiss();
+      }
+    }, keyboardDismissDelay);
+
+    return () => clearTimeout(delayDebounceFn);
+  }
+  , [input]);
 
   const changeTextHandler = (value) => {
-    if (value) {
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 2000);
-    }
-    
     setInput(value);
   };
 
