@@ -43,9 +43,10 @@ export const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
     alignItems: 'center'
-  },
+  }, 
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',

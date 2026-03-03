@@ -168,7 +168,7 @@ export default function HomeScreen({ navigation }) {
         >
             {/* --- Welcome Text --- for authenticate user*/}
             {auth?.user?.status === Authorised && (
-                <View style={[styles.sectionHeader, { justifyContent: 'flex-start', padding: 10, marginBottom: 10 }]}>
+                <View style={[styles.sectionHeader, { justifyContent: 'flex-start', marginTop: 10 }]}>
                     <Text style={[styles.sectionTitle, { fontSize: 28 }]}>Hello, {auth.user.name}{'  '}</Text>
                     <Image source={ImagesAssets.waving_hand_light} style={{ width: 40, height: 40 }} />
                 </View>
