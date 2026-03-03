@@ -1,14 +1,127 @@
 # react-native-hotel-booking
-React Hotel Booking React Native Course Project 
+React Hotel Booking React Native Project 
 
-## Link to APK
-
-
-## Walkthrough Tutorial (optional)
+## Link to APK:
+  [Downoad](https://drive.google.com/file/d/1a391Or78xqwekVebRH3rUkmjp9eIDJ9j/view?usp=sharing)
 
 
 ## Installation Guide
 
+### Download apk file from above [Downoad](https://drive.google.com/file/d/1a391Or78xqwekVebRH3rUkmjp9eIDJ9j/view?usp=sharing) link ( section Link to APK ) on Android device with version 16 or above
+  - **Open with Packege installer**
+  - **Install**
+  - **wait**
+  - **if Google Play Protected recommended App scan recommended:**
+    select More details and
+    Install without scanning
+  - **Open**
+
+---
+## Setup project Guide
+
+### Prerequisites
+- **Node.js** (v22 or higher)
+- **Expo CLI** – Expo CLI is included in the expo package.
+- **Android Emulator** (for Android) - come with Android studio
+- **iOS Simulator** (for macOS) – Xcode required
+- **.env file** – Create a `.env` file in the project root with your [backendless](https://backendless.com/) already created app configuratioins:
+  ```
+  EXPO_PUBLIC_API_URL=<your-api-url>
+  EXPO_PUBLIC_APPLICATION_ID=<your-app-id>
+  EXPO_PUBLIC_CLOUD_KEY=<your-cloud-key>
+
+  EXPO_PUBLIC_API_URL=${EXPO_PUBLIC_BASE_API_URL}/${EXPO_PUBLIC_APPLICATION_ID}/${EXPO_PUBLIC_CLOUD_KEY}/data
+
+  EXPO_PUBLIC_API_URL_AUTH=<your-app-url>/api/users
+  ```
+
+**Tales at db models:**
+```javascript
+// hotels
+{ "city":"string","occupancy":"string","kind":"string","created":"number","image_url":"string","description":"string","ownerId":null,"is_available":"boolean","country_code":"string","raiting":"number","price_per_night":"number","name":"string","location";"string","id":"number","category":"string","galery":"string" }
+
+// bookings
+{ "checkIn":"date","checkOut":"date","city":"string","country":"string","hotelId":"string","id":"string","imageUrl":"string","kind":"string","location":"string","name":"string","occupancy":"string","price":"number","resourceId":"number","state":"string","tag":"string","userId":"uuid"}
+```
+
+### Installation Steps
+
+1. **Clone the repository:** 
+
+      [Hotel booking](https://github.com/georgidokoff/react-native-hotel-booking.git)
+
+2. **Install dependencies**
+
+      ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Install Expo modules**
+
+      ```bash
+    yarn add expo
+    ```
+
+4. **Prebuild native modules** (Android/iOS):
+
+   ```bash
+   #You can use project script
+    npm run prebuild --clean
+   ```
+
+### Running the Project:
+
+#### Android
+```bash
+    # You can run development server
+    npx expo start
+
+    # You can run on emulator
+    npx expo run:android
+
+    # You can reate release file for Android device using project script
+    npm run build:apk
+```
+
+#### iOS (macOS only)
+```bash
+    # You can run development server
+    npx expo start
+
+    # You can run on simulator
+    npx expo run:ios
+```
+
+---
+
+## Walkthrough Tutorial:
+
+### Walkthrough for Guest User
+1. Launch the app and select "Continue as Guest" on the "Let's you in" screen.
+2. You will be directed to the Home screen where you can browse through featured and recommended hotels. Pull down to refresh the list if needed.
+3. Tap on any hotel card to view its details, including the photo gallery, location, description, and price per night.
+4. Navigate to the Search tab to search for hotels by name, city, country, or type. Note that as a guest, you can view the details, but button for booking is not avaiable. If there are no matches will appear  "No hotels found".
+5. Notice that the Bookings tab is disabled since you are not logged in.
+6. Go to the Profile tab to view static guest information. Tap the logout button in the header to return to the authentication screen.
+
+### Walkthrough for Authenticated User (username and password are included in the example)
+1. On the auth screen, choose to Sign with password.
+2. Enter the email `pesho@a.bg` and password `123456`. Submit the form.
+3. Upon successful login, you will land on the Home screen and see all available hotels.
+4. Tap on a hotel card. You will now see a "Book Now" button on the details screen. Tap it to select check-in and check-out dates, check the calculated price, and complete a booking.
+5. Go to the Search tab to search for specific hotels. You can also book directly from the search results by tapping a hotel and selecting dates.
+6. Navigate to the Bookings tab. Here you can view your existing reservations filtered by "Ongoing", "Completed", and "Canceled". 
+7. In the Bookings tab, you can view ticket details, cancel an ongoing booking, or check the refund status of canceled ones. You can also remove canceled hotel if there are no need to persist this information.
+8. Switch to the Profile tab to view and edit your profile. Update your name, phone number, or upload a new profile picture. A success message will briefly appear when changes are saved.
+9. To log out, tap the logout button in the top right corner of the Profile tab header.
+
+### Walkthrough for Registered User
+1. On the auth screen choose Sign Up
+2. Enter email and password (min 4 symbols)
+3. You will be logged in uppon succesful registration.
+4. Above functionality as Authenticated User without first two points.
 
 ## Functional Guide
 
@@ -102,8 +215,7 @@ React Hotel Booking React Native Course Project
 ```javascript
 // Hotel to Details
 { 
-  id, name, image_url, city, country_code, price_per_night, 
-  ratings, kind, occupancy, gallery, location, description, auth 
+  id, name, image_url, city, country_code, price_per_night, ratings, kind, occupancy, gallery, location, description, auth 
 }
 
 // Booking details
