@@ -41,6 +41,9 @@ export default function RegistrationScreen() {
           if (!validation?.valid) {
             setErrorState(validation);
           }
+        })
+        .catch((err) => {
+          setErrorState({ valid: false, message: "An error occurred during sign up." });
         });
     }
   };

@@ -13,6 +13,10 @@ import { defaultTheme } from "../../helpers/styleHelper.js";
 export default function AuthGateScreen({ navigation }) {
     const { login, register, loginGuest, isLoading, error, clearError } = useAuth();  
 
+    useEffect(() => {
+        clearError();
+    }, [navigation, clearError]);
+
     const signInHandler = async (email, password) => {
         clearError();
 
@@ -27,7 +31,6 @@ export default function AuthGateScreen({ navigation }) {
         if (!passwordValidation?.valid) {
             return passwordValidation;
         }
-
         if (error) {
             return { valid: false, message: error };
         }

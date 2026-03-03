@@ -42,11 +42,14 @@ export default function LoginScreen() {
 
   const onSignInHandlerPress = () => {
     if (onSignIn) {
-      onSignIn(login, password)
+       onSignIn(login, password)
         .then((validation) => {
           if (!validation?.valid) {
             setErrorState(validation);
           }
+        })
+        .catch((err) => {
+          setErrorState({ valid: false, message: "An error occurred during sign in." });
         });
     }
   };
