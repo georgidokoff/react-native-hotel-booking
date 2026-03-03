@@ -2,12 +2,12 @@
 React Hotel Booking React Native Project 
 
 ## Link to APK:
-  [Downoad](https://drive.google.com/file/d/1a391Or78xqwekVebRH3rUkmjp9eIDJ9j/view?usp=sharing)
+  [Downoad](https://drive.google.com/file/d/1h5VfNRyCNBGkFdnIDCPGOkU6MdoYl9Eo/view?usp=sharing)
 
 
 ## Installation Guide
 
-### Download apk file from above [Downoad](https://drive.google.com/file/d/1a391Or78xqwekVebRH3rUkmjp9eIDJ9j/view?usp=sharing) link ( section Link to APK ) on Android device with version 16 or above
+### Download apk file from above [Downoad](https://drive.google.com/file/d/1h5VfNRyCNBGkFdnIDCPGOkU6MdoYl9Eo/view?usp=sharing) link ( section Link to APK ) on Android device with version 16 or above
   - **Open with Packege installer**
   - **Install**
   - **wait**
