@@ -40,7 +40,6 @@ export function UserProvider({ children }) {
 
             return updatedUser;
         } catch (err) {
-            console.error("Error updating user:", err);
             setError("An error occurred while updating user data.");
         } finally {
             setIsLoading(false);
@@ -54,7 +53,6 @@ export function UserProvider({ children }) {
             await deleteById(userId, accessToken);
             setUser(null); // Clear user data after deletion
         } catch (err) {
-            console.error("Error deleting user:", err);
             setError("An error occurred while deleting user data.");
         } finally {
             setIsLoading(false);

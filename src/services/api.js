@@ -33,7 +33,7 @@ api.interceptors.response.use(
         
         // Check for token expiration/invalid token errors
         if (errorCode === 3064 || errorMessage.includes('Not existing user token') || status === 401) {
-            console.warn('Token invalid or expired. User needs to re-login.', error);
+            //console.warn('Token invalid or expired. User needs to re-login.', error);
             
             // Call logout callback if available
             if (logoutCallback) {

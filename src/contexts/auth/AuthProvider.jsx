@@ -60,7 +60,6 @@ export function AuthProvider({ children }) {
     const login = async (login, password) => {
         try {
             setIsLoading(true);
-
             return await callLogin(login, password)
                 .then((res) => {
                     let user = {
@@ -80,14 +79,12 @@ export function AuthProvider({ children }) {
                         accessToken: null,
                         user: null,
                     });
-                    console.error('Login error:', err);
                     setError('An error occurred during login');
                     return { valid: false, message: 'An error occurred during login' };
                 });
 
         } catch (err) {
             // console.log('login error', err, JSON.stringify(err), err.stack);
-            console.error('Login error:', err);
             setError('An error occurred during login');
             return { valid: false, message: 'An error occurred during login' };
         } finally {
@@ -98,6 +95,7 @@ export function AuthProvider({ children }) {
     const register = async (email, password, name) => {
         try {
             setIsLoading(true);
+            
             const response = await callRegister(email, password, name);
 
             if (response?.userStatus === "ENABLED") {
@@ -139,7 +137,6 @@ export function AuthProvider({ children }) {
                 accessToken: null,
                 user: null,
             });
-            console.error('Guest login error:', err);
             setError('An error occurred during guest login');
             return { valid: false, message: 'An error occurred during guest login' };
         } finally {
@@ -151,7 +148,6 @@ export function AuthProvider({ children }) {
         await callLogout(auth?.accessToken)
             .catch((err) => {
                 setIsLoading(false);
-                console.error('Error during logout:', err);
                 setError('An error occurred during logout');
                 return { valid: false, message: 'An error occurred during logout' };
             })
