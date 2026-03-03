@@ -83,7 +83,6 @@ export function BookingProvider({ children }) {
                 });
                 logout();
                 setError("Your session has expired. Please login again.");
-                setauth
                 return {};
             }
 

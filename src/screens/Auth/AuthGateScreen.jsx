@@ -103,22 +103,22 @@ export default function AuthGateScreen({ navigation }) {
         const unsubscribe = navigation.addListener("beforeRemove", (e) => {
             const { action } = e;
             if (action.payload?.params?.action === "guest") {
-                e.preventDefault();
+                // e.preventDefault();
                 guestHandler();
             } else if (action.payload?.params?.action === "signUp") {
-                e.preventDefault();
+                // e.preventDefault();
                 signUpHandler();
             } else if (action.payload?.params?.action === "signIn") {
-                e.preventDefault();
+                // e.preventDefault();
                 signInHandler();
             } else if (action.payload?.params?.action === "onSignUpNavigate") {
-                e.preventDefault();
+                // e.preventDefault();
                 signUpNavigateHandler();
             } else if (action.payload?.params?.action === "onSignInNavigate") {
-                e.preventDefault();
+                // e.preventDefault();
                 signInNavigateHandler();
             } else if (action.payload?.params?.action === "onGuestNavigate") {
-                e.preventDefault();
+                // e.preventDefault();
                 guestNavigateHandler();
             }
         });

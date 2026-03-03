@@ -75,10 +75,15 @@ export function AuthProvider({ children }) {
 
                 })
                 .catch((err) => {
+                    clearError();
+
                     setAuth({
                         accessToken: null,
                         user: null,
                     });
+
+                    logout();
+
                     setError('An error occurred during login');
                     return { valid: false, message: 'An error occurred during login' };
                 });
@@ -105,10 +110,25 @@ export function AuthProvider({ children }) {
             return response;
 
         } catch (err) {
+            clearError();
+
             setAuth({
                 accessToken: null,
                 user: null,
             });
+
+            logout();
+
+            const isUnauthorized = err?.response?.status === 401 || err?.status === 401;
+            if (isUnauthorized && !err.retried) {
+                console.log('Retrying registration after 401 error...');
+                err.retried = true;
+                
+                await new Promise(resolve => setTimeout(resolve, 800));
+                return await register(email, password, name);
+            }
+
+
             setError('An error occurred during registration');
             return { valid: false, message: 'An error occurred during registration' };
         }
@@ -133,10 +153,15 @@ export function AuthProvider({ children }) {
             setAuth({ user, accessToken });
 
         } catch (err) {
+            clearError();
+
             setAuth({
                 accessToken: null,
                 user: null,
             });
+
+            logout();
+
             setError('An error occurred during guest login');
             return { valid: false, message: 'An error occurred during guest login' };
         } finally {
